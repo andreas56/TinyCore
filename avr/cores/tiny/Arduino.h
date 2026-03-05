@@ -50,10 +50,10 @@ void yield(void);
 
 // Compile-time error checking functions
 
-void badArg(const char*) __attribute__((error("")));
+void badArg(const char*) __attribute__((warning("")));
 // badArg is when we can determine at compile time that an argument is inappropriate.
 
-void badCall(const char*) __attribute__((error("")));
+void badCall(const char*) __attribute__((warning("")));
 // badCall is used when the function should not be called, period (for the selected part with the currently selected options for all tools submenus)
 // and calling it with different arguments can't change that.
 
