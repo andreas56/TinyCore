@@ -1969,22 +1969,22 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 26.menu.clock.8MHz_external.build.f_cpu=8000000L
 
 26.menu.clock.7_3728MHz_external=7.3728 MHz external osc.
-26.menu.clock.7_3728MHz_external.bootloader.low_fuses=0xbd
+26.menu.clock.7_3728MHz_external.bootloader.low_fuses=0xbf
 26.menu.clock.7_3728MHz_external.build.clocksource=1
 26.menu.clock.7_3728MHz_external.build.f_cpu=7372800L
 
 26.menu.clock.6MHz_external=6 MHz external osc.
-26.menu.clock.6MHz_external.bootloader.low_fuses=0xbd
+26.menu.clock.6MHz_external.bootloader.low_fuses=0xbf
 26.menu.clock.6MHz_external.build.clocksource=1
 26.menu.clock.6MHz_external.build.f_cpu=6000000L
 
 26.menu.clock.4MHz_external=4 MHz external osc.
-26.menu.clock.4MHz_external.bootloader.low_fuses=0xbd
+26.menu.clock.4MHz_external.bootloader.low_fuses=0xbf
 26.menu.clock.4MHz_external.build.clocksource=1
 26.menu.clock.4MHz_external.build.f_cpu=4000000L
 
 26.menu.clock.3_6864MHz_external=3.6864 MHz external osc.
-26.menu.clock.3_6864MHz_external.bootloader.low_fuses=0xbd
+26.menu.clock.3_6864MHz_external.bootloader.low_fuses=0xbf
 26.menu.clock.3_6864MHz_external.build.clocksource=1
 26.menu.clock.3_6864MHz_external.build.f_cpu=3686400L
 
