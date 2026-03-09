@@ -4,11 +4,11 @@ An Arduino core for classic ATtiny chips, with the option of running the [Urboot
 Arduino IDE v1.8 and v2.x supported!
 
 TinyCore is a fork of the [ATTinyCore 2.0.0 branch](https://github.com/SpenceKonde/ATTinyCore). It focuses on improving the overall user experience and other quality-of-life improvements. Compared to ATtinyCore, TinyCore has:  
-* Less clutter and confusing options in the Arduino IDE Tools menu
+* Simplified Arduino IDE Tools menu
 * Rock-solid bootloader support using [Urboot](https://github.com/stefanrueger/urboot) in favour of Optiboot
 * Hardware debugging support using [PyAvrOCD](https://pyavrocd.io)
 * No Digispark (Micronucleus) support due to [USB timing costraints and the poor user experience caused by this](https://github.com/SpenceKonde/ATTinyCore?tab=readme-ov-file#vusb-is-not-supported-for-usb-functionality-within-the-sketch)
-* A simplified README
+* Revised documentation
 
 # Table of contents
 * [Supported microcontrollers](#supported-microcontrollers)
@@ -18,6 +18,10 @@ TinyCore is a fork of the [ATTinyCore 2.0.0 branch](https://github.com/SpenceKon
 * [EEPROM retain option](#eeprom-option)
 * [Printf support](#printf-support)
 * [Pin macros](#pin-macros)
+* [SPI, i2c and UART](#spi-i2c-and-uart)
+  - [SPI](#spi)
+  - [i2c](#i2c)
+  - [Serial/UART](#serialuart)
 * [Write to own flash](#write-to-own-flash)
 * [Programmers](#programmers)
 * **[How to install](#how-to-install)**
@@ -129,6 +133,104 @@ Unlike the official Arduino cores, TinyCore (And ATTinyCore for that matter) has
 If you're using a serial port, simply use `Serial.printf("Milliseconds since start: %ld\n", millis());`. You can also use the `F()` macro if you need to store the string in flash. Other libraries that inherit the Print class (and thus support printf) are the LiquidCrystal LCD library and the U8G2 graphical LCD library.
 
 
+## SPI, i2c and UART
+Most of these devices lack hardware support for interfaces such as SPI, i2c and/or UART (Serial), which are commonly available on ATmega devices. To minimize these differences, TinyCore provides modified versions of Wire.h and SPI.h that maintain the standard Arduino APIs while adapting their implementation to the available hardware on each chip.
+As a result, code that includes Wire.h or SPI.h should generally work without modification. Because these interfaces are already handled internally, libraries such as USIWire, tinyWire, WireS, and similar alternatives are unnecessary and not supported.
+For serial communication, devices without a hardware UART can use the SoftwareSerial library. However, SoftwareSerial relies on pin change interrupts (PCINTs), which prevents those interrupts from being used elsewhere. To avoid this limitation, TinyCore provides an alternative software serial implementation that uses the analog comparator interrupt instead. This allows PCINTs to remain available for other purposes. In this implementation, the RX pin is fixed, while the TX pin can be selected from a limited set of pins.
+See the serial section below for additional details.  
+
+<details>
+<summary><b>Hardware communication interfaces table</b></summary>
+
+| Part(s)               | SPI           | I2C Master  | I2C Slave | Serial (TX* , RX) |
+|-----------------------|---------------|-------------|-----------|-------------------|
+| ATtiny2313/4313       | USI           | USI         | USI       | 1x Hardware       |
+| ATtiny43              | USI           | USI         | USI       | Software PA4, PA5 |
+| ATtiny24/44/84        | USI           | USI         | USI       | Software PA1, PA2 |
+| ATtiny25/45/85        | USI           | USI         | USI       | Software PB0, PA1 |
+| ATtiny26              | USI           | USI         | USI       | Software PA6, PA7 |
+| ATtiny261/461/861     | USI           | USI         | USI       | Software PA6, PA7 |
+| ATtiny87/167          | Real SPI      | USI         | USI       | 1x Hardware (LIN) |
+| ATtiny48/88           | Real SPI      | Real TWI    | Real TWI  | Software PD6, PD7 |
+| ATtiny441/841         | Real SPI      | Software    | Slave TWI | 2x Hardware       |
+| ATtiny1634            | USI           | USI         | Slave TWI | 2x Hardware **    |
+| ATtiny828             | Real SPI      | Software    | Slave TWI | 1x Hardware       |
+
+<b>*</b>  TX pin can be moved to any other pin on that port with Serial.setTxBit().  
+<b>**</b> UART1 shares pins with the USI and slave TWI interface, which basically means you have to choose between USI (SPI or I2C master) or I2C slave, or a second serial port.
+
+</details>
+
+### SPI
+On parts with hardware SPI, `SPI.h` behaves the same as on classic AVR devices. On USI-based parts, the interface differs slightly.
+
+<details>
+<summary><b>SPI support and differences on USI-based parts</b></summary>
+
+USI uses **DI/DO** instead of **MISO/MOSI**. In master mode, **DI = MISO** and **DO = MOSI**. In slave mode, **DI = MOSI** and **DO = MISO**, though slave mode is not supported by `SPI.h`. The `MISO` and `MOSI` defines therefore assume master mode. For slave implementations with other libraries, `PIN_USI_DI`, `PIN_USI_DO`, and `PIN_USI_SCK` are provided. Do not confuse SPI pins used by sketches with the ISP programming pins, where the device operates as an SPI slave.
+
+USI has no hardware clock generator, so clock dividers are implemented in software. Dividers **2, 4, 8, and ≥14** use separate routines. Passing a constant value to `SPISettings` or `setClockDivider` reduces code size; otherwise all routines and 32-bit math are included. Dividers ≥14 are approximate because the implementation is optimized for size.
+
+Interrupts are not disabled during transfers. If an interrupt occurs during a byte, one clock bit may be stretched. This is usually harmless, but devices requiring consistent clock timing should wrap `transfer()` in `ATOMIC_BLOCK` or disable interrupts.
+
+USI-based **SPI and i2c cannot be used simultaneously**, as they share the same hardware and pins.
+</details>
+
+
+### I2C
+i2c support varies between devices. The ATtiny48 and ATtiny88 provide hardware i2c and behave like ATmega devices. As with SPI, the `Wire.h` library handles most differences, and code generally works without modification.
+
+<details>
+<summary><b>i2c support and limitations, USI, and slave-only parts</b></summary>
+
+Most other devices implement i2c using USI. In these cases:
+
+* **External pull-up resistors are required.** Unlike hardware TWI implementations, USI-based i2c cannot rely on internal pull-ups.
+* The i2c master clock cannot be configured. The SCL frequency is fixed.
+
+A few devices support hardware i2c slave mode only, with neither USI nor hardware TWI available for master operation. On these parts:
+
+* i2c slave mode is supported through the included `Wire.h` library.
+* Alternate or masked slave addresses can be configured via the `TWSAM` register. This register functions as on newer AVRs, but no wrapper API is provided.
+* On the ATtiny828, the watchdog timer must be enabled for i2c operation due to a silicon erratum. Enabling the WDT in interrupt mode with an empty handler is sufficient.
+
+Software i2c master implementations on these devices are unreliable. In particular, timeouts cannot be distinguished from slaves returning zero data, and clock configuration is not supported. Simultaneous master and slave operation is not supported on any of these devices.
+
+##### Buffer size
+Devices with more than 128 bytes of SRAM use a **32-byte buffer**. Smaller devices use **16 bytes**. However, most libraries assume a 32-byte buffer, so TinyCore uses a 32-byte buffer on larger devices even when this consumes a significant portion of available RAM.
+</details>
+
+
+### Serial/UART
+All devices provide a `Serial` object. On parts with hardware UART, `Serial` behaves as a standard full-duplex AVR serial interface. Devices with two UARTs also provide `Serial1`. Most supported devices do not include hardware UART and instead use software serial.
+
+<details>
+<summary><b>Hardware and software serial</b></summary>
+
+This core is compatible with the standard `SoftwareSerial` library, but that implementation uses all PCINT vectors. To avoid this, TinyCore provides a built-in software serial implementation that uses the analog comparator interrupt instead of PCINT. The RX pin is fixed to **AIN1**, while TX defaults to **AIN0** and can be moved to a limited set of pins.
+
+Software serial can operate only one instance at a time. Transmission is always blocking: data is sent immediately rather than buffered as with hardware UART. Calls such as `Serial.print()` therefore return only after transmission completes.
+
+```c
+Serial.print("Hello World\n");
+// On parts without hardware UART this is equivalent to:
+Serial.print("Hello World\n");
+Serial.flush();
+```
+
+##### Moving builtin soft-serial TX pin
+On parts without hardware serial, the TX pin can be moved to another pin *on the same port* using `Serial.setTxBit(bit)`. The bit value must be between 0 and 7 and corresponds to the bit position within the port. This must be called before `Serial.begin()`.
+
+##### TX only soft serial
+The built-in software serial implementation makes it possible to only enable the TX only. This can be done in the Tools menu, or adding `-DSOFT_TX_ONLY` as a build flag in PlatformIO. TX only will exclude everything except the transmit functionality. read() and peek() will always return -1, and available() will always return 0.
+
+##### Internal oscillator and Serial
+Reliable UART communication requires accurate clock timing. The internal oscillator on many classic ATtiny devices is calibrated to approximately ±10%, which may be insufficient for serial communication. Some devices operate correctly without tuning, but others require calibration using OSCCAL.
+The ATtiny x41 family, ATtiny1634R, and ATTiny828R include an oscillator calibrated to ±2%, but only below 4 V. At higher voltages the oscillator frequency increases, which can cause UART timing errors depending on baud configuration. Clock menu options are provided to compensate when operating above 4 V.
+Because of these limitations, applications that rely on serial communication are generally best served by using an external crystal, except on devices with tighter oscillator calibration.
+</details>
+
+
 ## Pin macros
 Note that you don't have to use the digital pin numbers to refer to the pins. You can also use some predefined macros that map "Arduino pins" to the port and port number. This can result in code that's more portable across different chips and Arduino cores:
 
@@ -190,7 +292,11 @@ Ok, so you have downloaded and installed MicroCore, but how do you get the wheel
 * Hit **Burn Bootloader** to set the fuses.
 * Now that the correct fuse settings are set you can upload your code by using your programmer tool. Simply hit *Upload*, and the code will be uploaded to the microcontroller.
 
-# TODO
+
+
+
+
+# TODO - remove, rewrite, reword, format the rest
 
 ## ATTinyCore 2.0.0 - lots of changes, some of them big, a few of them may cause breakage
 I cobbled ATTinyCore together with far less experience than I have now (indeed, I'd barely covered the basics when I started trying to get a working ATtiny841 core). I like to think I have a much better idea of how a core should be designed now. But this meant some terrible decisions were made in the past. Decisions that we have been paying the price for ever since. I decided that the core should be advanced to a state where the bad decisions have been fixed, and everything that needs to be exposed on the parts is exposed in a consistent manner (too much was done incrementally, and not enough planning was done, ever). This core should not expect any significant new feature enhancements from here on out. The new feature development will be for megaTinyCore and DxCore, as those represent the future of the AVR architecture. Bug fixes will still be made.
@@ -218,87 +324,6 @@ You should **always review that part-specific documentation** before making any 
 ### Current **strongly** recommended IDE version: 1.8.13
 
 
-
-### I2C, SPI and Serial
-Most of these parts do not have hardware support for I2C, SPI, and/or UART (Serial) like an ATmega device would. **As much as possible we try to paper over the differences - you can include Wire.h or SPI.h and expect things to just work except as noted below** - this is achieved by a special version of Wire.h and SPI.h which presents the same API, but implements it very differebtly depending on the underlying hardeware. Hence **the use of libraries like USIWire, tinyWire, WireS, and so on is unnecessary** These libraries are also considered unsupported, as they should never be necessary. In the case of Serial/UART, where there is no hardware serial, the SoftwareSerial library can be used, but it is often undesirable because of how it takes over all the PCINTs. To address this, we provide a different software serial implementation which uses the analog comparator interrupt instead of a PCINT, allowing the PCINTs to be used freely. The RX pin is fixed, but the TX pin can be moved around to a limited subset of pins. See the serial section below for more information. The following table shows what hardware interface is available on each of these part.
-
-
-| Part(s)               | SPI           | I2C Master  | I2C Slave | Serial (TX* , RX) |
-|-----------------------|---------------|-------------|-----------|-------------------|
-| ATtiny x313           | USI           | USI         | USI       | 1x Hardware       |
-| ATtiny 43             | USI           | USI         | USI       | Software PA4, PA5 |
-| ATtiny x4             | USI           | USI         | USI       | Software PA1, PA2 |
-| ATtiny x5             | USI           | USI         | USI       | Software PB0, PA1 |
-| ATtiny 26             | USI           | USI         | USI       | Software PA6, PA7 |
-| ATtiny x61            | USI           | USI         | USI       | Software PA6, **  |
-| ATtiny x7             | Real SPI      | USI         | USI       | 1x Hardware (LIN) |
-| ATtiny x8             | Real SPI      | Real TWI    | Real TWI  | Software PD6, PD7 |
-| ATtiny x41            | Real SPI      | Software    | Slave TWI | 2x Hardware       |
-| ATtiny1634            | USI           | USI         | Slave TWI | 2x Hardware ***   |
-| ATtiny828             | Real SPI      | Software    | Slave TWI | 1x Hardware       |
-
-`*` - TX pin can be moved to any other pin on that port with Serial.setTxBit().
-`**` - RX can be on PA5, PA6, or PA7 (default), controlled by the tools submenu.
-`***` - Serial1 shares pins with the USI and slave TWI interface, which basically means you have to choose between USI (SPI or I2C master) or I2C slave, or a second serial port.
-
-There are some specific considerations relevant to each of these interfaces, detailed below.
-
-#### SPI
-Where real hardware SPI is available, SPI.h will behave identically to that on any classic AVR.
-
-On USI parts, there are a few minor concerns, though most things will work without issue, and it should all be handled transparently via the SPI library.
-* **USI does not have MISO/MOSI, it has DI/DO**
-  * when operating in master mode, **DI is MISO, and DO is MOSI**.
-  * When operating in slave mode, **DI is MOSI and DO is MISO**. Note that like all other versions of SPI.h, slave mode is not supported. You must use a different library for that.
-  * The #defines for MISO and MOSI assume master mode, slave mode being unsupported). PIN_USI_DI, PIN_USI_DO, and PIN_USI_SCK are defined and can be used for operation in slave mode with some other library. Be careful to distinguish the MISO/MOSI/SCK pins marked as "Programming Pins" from the pins used for SPI from within the sketch - when programming a part via ISP, it is, after all, acting as a slave.
-* The clock dividers are implemented in software (a clock generator is one of the many things that USI lacks). Clock dividers of 2, 4, 8 and >=14 are implemented as separate routines; **call `SPISettings` or `setClockDivider` with a constant value to use less program space**, otherwise, all routines will be included along with 32-bit math. Clock dividers larger than 14 are only approximate because the routine is optimized for size, not exactness.
-* Interrupts are not disabled during data transfer. That means that an interrupt could fire in the middle of a byte, and one of the bits in that byte would be very long. This is usually fine. If it isn't, because you're working with devices that require consistent clocking, wrap calls to `transfer` in `ATOMIC_BLOCK` or disable interrupts in the normal ways.
-* Be aware that USI-based I2C is not available when USI-based SPI is in use (this should be obvious, as they used the same pins).
-
-
-#### I2C
-The situation regarding I2C is more complicated; The ATtiny48 and ATtiny88 have real hardware I2C, which works like it does on ATmega devices. Like SPI.h, the Wire.h library will handle most of these differences, and most things will work the same way.
-
-Most other devices must use the USI for I2C. In these cases:
-* **You must have external pullup resistors installed** - unlike devices with a real hardware TWI port, the internal pullups cannot be used with USI-based I2C to make simple cases (short wires, small number of tolerant slave devices) work.
-* The option to set the clock as I2C master does not work. The SCL clock speed is fixed.
-
-A small number of devices have support for hardware slave I2C **but neither a USI nor hardware TWI for master operation**. On THOSE parts, some additional considerations apply:
-* I2C slave works great through the included Wire.h library.
-  * You can even do an alternate address or masked address (where several of the bits of the incoming address are ignored) by setting the `TWSAM` register. That register works the same way as it does on modern (post-2016) AVRs - however, no wrapper is provided around setting it, unlike the modern AVRs (ex, megaTinyCore and DxCore)
-  * On the ATtiny828, you must have the watchdog timer enabled in order for the USI to work in I2C mode; one of the pins in afflicted with one of the nastiest silicon bugs in a pre-2016 tinyAVR, and when the WDT is not enabled (interrupt mode with an empty interrupt is fine),
-* Software I2C Master, on the other hand is... a little flaky on these parts, most notably, it's not possible to tell whether a transaction timed out, or if the slave just responded with a bunch of 0's. There is no clock configuration functionality here either. If planning a new project, consider using a different device (might I recommend a [modern tinyAVR](https://github.com/SpenceKonde/megaTinyCore/)?) if I2C master mode is a big part of your application.
-
-Regardless of the implementation, simultaneously acting as both a master and a slave is never supported here. The hardware doesn't support it like it does on modern AVRs.
-
-##### Buffer size
-On all parts with more than 128b of SRAM, the buffer size in 32 bytes. On smaller parts, it is 16 bytes, but I'm not sure you could make those work with the Wire library anyway due to flash size constraints so this may not be relevant. All official cores use 32b buffers, and it is for this reason that a 32b buffer is used even on parts where the pair of buffers leads to using a painfully large fraction of the RAM  - libraries implicitly depend on the buffer being at least 32b, often without the author even being aware of that fact.
-
-#### Serial Support
-To most of us, the Serial interface is the most important of the big three serial protocols. All parts, whether or not they have hardware serial, will have an object named `Serial` that provides serial interface functionality. Where there is hardware serial, the Serial object is a normal fully featured, full duplex serial port that works just like any other AVR. The lucky chips that have two serial ports will also have Serial1 defined.
-
-Unfortunately, that's only 8 of the 21 parts supported by this core. The rest must use some form of software serial. While this core is fully compatible with the usual SoftwareSerial library, it comes with the usual disadvantages, most notably the fact that it grabs all the PCINT vectors for itself. To address that on the parts not blessed with hardware serial, we include a software serial implementation with a fixed (on the x61, there are three options, selected from a tools menu.) RX pin, and a TX pin with a limited number of options - but which leaves the PCINT vectors available. It uises the analog comparator interrupt, and requires that the RX pin be the AIN1 pin. TX defaults to the AIN0 pin.
-
-Regardless of how you achieve the software serial, however, you can still only transmit or receive on a single software serial instance at a time (SoftwareSerial or the builtin tinySoftSerial). Transmit is always blocking - a call that writes via software serial will not return until the data is sent unlike hardware serial which puts it into a buffer to send in the background.
-
-```c
-// In other words
-Serial.println("Hello World");
-// on a part without hardware serial, which is hence using our builtin software implementation, is equivalent to:
-Serial.println("Hello World");
-Serial.flush();
-```
-
-##### Moving builtin soft-serial TX pin
-The builtin software serial port ("Serial" on parts without hardware serial) can be moved to any pin *as long as it is on the same port*. Use the `Serial.setTxBit(bit)` method. The 'bit' argument passed must be a number between 0 and 7, corresponding to the number within the port of the desired TX pin; **this should be called before** `Serial.begin()`. This option is only available on parts with the software serial.
-
-##### TX-only soft serial
-Many users have asked for a way to disable the receiving functionality of the builtin soft-serial entirely. New in 2.0.0, you can choose TX only the tools -> Software Serial menu. This will exclude everything except the transmit functionality. read() and peek() will always return -1, and available() will always return 0.
-
-##### Warning: Internal oscillator and Serial
-Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. However, in practice, a larger portion of parts work without tuning than would be expected from the spec. That said, for the ATtiny x4, x5, x8, and x61-family I have yet to encounter a chip that was not close enough for serial using the internal oscillator at 3.3-5v at room temperature - This is consistent with the Typical Characteristics section of the datasheet, which indicates that the oscillator is fairly stable w/respect to voltage, but highly dependent on temperature.
-
-The ATtiny x41-family, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communication if the UART baud rate calculation error is in the same direction - See [the AVR baud rate chart](https://docs.google.com/spreadsheets/d/1uzU_HqWEpK-wQUo4Q7FBZGtHOo_eY4P_BAzmVbKCj6Y/edit?usp=sharing). These parts have a clock speed menu option for the internal oscillator when Vcc > 4v and when it is <= 4V; when the >4V option is selected, we'll takea guess at what the calibration should be lowered to, which should be enough to get serial working.. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, **it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v, or with a Micronucleus bootloader) use an external crystal** until a tuning solution is available.
 
 ### ADC Support
 ATTinyCore 2.0.0 introduces a major enhancement to the handling of analog and digital pin numbers: Now, in all the #defined constants that refer to an analog channel, the high bit is set. (ie, ADC channel 4, A4, is defined by a line `#define A4 (0x80 | 4));` (actually, we also define ADC_CH() macro as shorthand for the bitwise or with 0x80. This advantage of this that it makes it more obvious why we're doing this to the number; if you see (0x80 | 4) you'd be like "wtf is this for? what does 0x80 have to do with anything?", whereas if you hadn't read this, and you saw ADC_CH(4) - you might not know exactly what's going on, but just from the name you'd know it was something to do with an analog reading, maybe of channel 4). Because all the analog channel number defines are all distinct from things that aren't analog channel numbers, the core's analogRead and digitalRead functions can tell the two apart; digitalRead(A3) will now look up what digital pin analog channel 3 is on, and use digitalRead on that, while analogRead(7) will now go look up what analog channel is on digital pin 7, and use analogRead on that.
