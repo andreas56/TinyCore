@@ -65,27 +65,27 @@ Make sure you connect an ISP programmer, and select the correct one in the "Prog
 
 Note that the ATtiny48/88 and ATtiny828 requires an external clock signal and is not able to drive a resonator circuit itself. You may use a dedicated quartz crystal oscillator or a crystal driver.
 
-| Frequency   | Oscillator type       | Urboot upload speed | Note                                                            |
-|-------------|-----------------------|---------------------|-----------------------------------------------------------------|
-| 16 MHz      | External crystal/osc. | 115200              |                                                                 |
-| 20 MHz      | External crystal/osc. | 115200              |                                                                 |
-| 18.4320 MHz | External crystal/osc. | 115200              |                                                                 |
-| 14.7456 MHz | External crystal/osc. | 115200              |                                                                 |
-| 12 MHz      | External crystal/osc. | 115200              |                                                                 |
-| 11.0592 MHz | External crystal/osc. | 115200              |                                                                 |
-| 9.216 MHz   | External crystal/osc. | 115200              |                                                                 |
-| 8 MHz       | External crystal/osc. | 38400               |                                                                 |
-| 7.3728 MHz  | External crystal/osc. | 115200              |                                                                 |
-| 6 MHz       | External crystal/osc. | 57600               |                                                                 |
-| 4 MHz       | External crystal/osc. | 57600               |                                                                 |
-| 3.6864 MHz  | External crystal/osc. | 115200              |                                                                 |
-| 2 MHz       | External crystal/osc. | 9600                |                                                                 |
-| 1 MHz       | External crystal/osc. | 9600                |                                                                 |
-| 16 MHz      | Internal osc. (PLL)   | 115200              | Only the ATtiny25/45/85, 24/44/84, 261/461/861 and 26 has a PLL |
-| 8 MHz       | Internal osc.         | 38400               | Might cause UART upload issues. See comment above               |
-| 4 MHz       | Internal osc.         | 9600                | Derived from the 8 MHz internal oscillator                      |
-| 1 MHz       | Internal osc.         | 9600                | Derived from the 8 MHz internal oscillator                      |
-| 128kHz      | Internal WDT osc.     | 1200                | 128kHz is not recommended for bootloader use                    |
+| Frequency   | Oscillator type       | Urboot upload speed | Note                                              |
+|-------------|-----------------------|---------------------|---------------------------------------------------|
+| 16 MHz      | External crystal/osc. | 115200              |                                                   |
+| 20 MHz      | External crystal/osc. | 115200              |                                                   |
+| 18.4320 MHz | External crystal/osc. | 115200              |                                                   |
+| 14.7456 MHz | External crystal/osc. | 115200              |                                                   |
+| 12 MHz      | External crystal/osc. | 115200              |                                                   |
+| 11.0592 MHz | External crystal/osc. | 115200              |                                                   |
+| 9.216 MHz   | External crystal/osc. | 115200              |                                                   |
+| 8 MHz       | External crystal/osc. | 38400               |                                                   |
+| 7.3728 MHz  | External crystal/osc. | 115200              |                                                   |
+| 6 MHz       | External crystal/osc. | 57600               |                                                   |
+| 4 MHz       | External crystal/osc. | 57600               |                                                   |
+| 3.6864 MHz  | External crystal/osc. | 115200              |                                                   |
+| 2 MHz       | External crystal/osc. | 9600                |                                                   |
+| 1 MHz       | External crystal/osc. | 9600                |                                                   |
+| 16 MHz      | Internal osc. (PLL)   | 115200              | ATtiny25/45/85, 24/44/84, 261/461/861 and 26 only |
+| 8 MHz       | Internal osc.         | 38400               | Might cause UART upload issues. See comment above |
+| 4 MHz       | Internal osc.         | 9600                | Derived from the 8 MHz internal oscillator        |
+| 1 MHz       | Internal osc.         | 9600                | Derived from the 8 MHz internal oscillator        |
+| 128kHz      | Internal WDT osc.     | 1200                | 128kHz is not recommended for bootloader use      |
 
 
 ## Bootloader
