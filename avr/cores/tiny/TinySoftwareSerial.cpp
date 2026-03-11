@@ -33,9 +33,10 @@
 extern "C"{
 
   #ifndef SOFT_TX_ONLY
+  #define RXMASK = (1 << SOFTSERIAL_RXBIT)
     soft_ring_buffer rx_buffer = {{ 0 }, 0, 0};
     ISR(SOFTSERIAL_vect) {
-  uint8_t ch = 0;
+    uint8_t ch = 0;
     __asm__ __volatile__ (
 		"   rcall uartDelay\n"          // Get to 0.25 of start bit (our baud is too fast, so give room to correct)
 		"1: rcall uartDelay\n"              // Wait 0.25 bit period
@@ -44,7 +45,7 @@ extern "C"{
 		"   rcall uartDelay\n"              // Wait 0.25 bit period
 		"   clc\n"
 		"   in r23,%[pin]\n"
-		"   and r23, %[mask]\n"
+		"   andi r23, %[mask]\n"
 		"   breq 2f\n"
 		"   sec\n"
 		"2: ror   %0\n"                    
@@ -59,7 +60,7 @@ extern "C"{
 		  "0" ((uint8_t)0),
 		  [count] "r" ((uint8_t)8),
 		  [pin] "I" (_SFR_IO_ADDR(ANALOG_COMP_PIN)),
-		  [mask] "r" (Serial._rxmask)
+		  [mask] "M" (RXMASK)
 		:
 		  "r23",
 		  "r24",
@@ -116,13 +117,7 @@ extern "C"{
 #else
   TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer) {
     _rx_buffer = rx_buffer;
-
-    _txmask = _BV(SOFTSERIAL_TXBIT);
-    #ifndef SOFT_TX_ONLY
-      _rxmask = _BV(SOFTSERIAL_RXBIT);
-    #endif
-
-
+    _txmask   = _BV(SOFTSERIAL_TXBIT);
     _delayCount = 0;
   }
 #endif
