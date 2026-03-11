@@ -27,10 +27,9 @@ TinyCore is a fork of the [ATTinyCore 2.0.0 branch](https://github.com/SpenceKon
   - [PlatformIO](#platformio)
 * **[Getting started with TinyCore](#getting-started-with-TinyCore)**
 * [SPI, i2c and UART](#spi-i2c-and-uart)
-  - [SPI](#spi)
-  - [i2c](#i2c)
-  - [Serial/UART](#serialuart)
 * [ADC](#adc)
+* [Neopixel library](#neopixel-library)
+* [Pin mappings](#pin-mappings)
 
 
 ## Supported microcontrollers
@@ -299,6 +298,8 @@ Because of these limitations, applications that rely on serial communication are
 Unlike official Arduino cores, TinyCore doesn't let you refer to analog input pins with just their channel number (0 for instance), you'll either have to use the Ax macros (A0 for instance) or use the equivalent digital pin number instead.  
 This means that for an ATtiny841, you can either use `analogRead(A10)`, `analogRead(PIN_PB1)` or `analogRead(9)`.
 
+Analog pin labels (A0 for instance) cannot be used with `digitalWrite()`, `digitalRead()`, or `analogWrite()`. All pins must be referenced by their digital pin numbers for these functions. Analog pin labels should be used only with analogRead(). This differs from the behavior on official AVR boards, but allows access to advanced ADC features on some ATtiny chips with minimal impact. In practice, clear and well-written code is unlikely to be affected by this.
+
 Some parts have additional ADC functionality like differential inputs, programmable gain, bipolar mode and noise reduction. See the table below and read the appropriate [TinyCore target spesific documentation](#supported-microcontrollers) on how to utilize this functionality.
 
 <details>
@@ -315,6 +316,22 @@ Some parts have additional ADC functionality like differential inputs, programma
 
 
 Note that the number of analog input pins includes the input that may be multiplexed with the RESET pin. The RESET pin has to be disabled to utilize this input.
+</details>
+
+### Special analog channels
+This core also implements "special" analog channels that can be read using `analogRead()`. Different parts have different channels.
+
+<details>
+<summary><b>Here is an overview of the various "special" analog channels</b></summary>
+
+| **ATtiny**           | 25/45/85 | 24/44/84 | 441/841 | 261/461/861 | 87/167 | 48/88 | 2313/4313 | 1634 | 828 | 43 | 26 |
+|----------------------|----------|----------|---------|-------------|--------|-------|-----------|------|-----|----|----|
+| `ADC_GROUND`         | ✅       | ✅       | ✅       | ✅          | ✅      | ✅    | ❌        | ✅    | ✅  | ✅ | ✅  |
+| `ADC_INTERNAL1V1`    | ✅       | ✅       | ✅       | ✅          | ✅      | ✅    |           | ✅    | ✅  | ✅ | ✅  |
+| `ADC_TEMPERATURE`    | ✅       | ✅       | ✅       | ✅          | ✅      | ✅    |           | ✅    | ✅  | ✅ | ✅  |
+| `ADC_VCC`            | ❌       | ❌       | ✅       | ❌          | ✅      | ❌    |           | ❌    | ✅  | ❌ | ❌  |
+| `ADC_VBATDIV2`       | ❌       | ❌       | ❌       | ❌          | ❌      | ❌    |           | ❌    | ❌  | ✅ | ❌  |
+| `ADC_AVCCDIV4`       | ❌       | ❌       | ❌       | ❌          | ✅      | ❌    |           | ❌    | ❌  | ❌ | ❌  |
 </details>
 
 ### Differential ADC support
@@ -342,78 +359,18 @@ Notes:
 </details>
 
 
+## Neopixel library
+Standard NeoPixel libraries (for WS2812 and similar LEDs) do not support all clock speeds used by this core, and some are limited to specific ports.
+To address this, this core includes two compatible libraries based on Adafruit_NeoPixel; [tinyNeoPixel](avr/libraries/tinyNeoPixel/) and [tinyNeoPixel_Static](avr/libraries/tinyNeoPixel_Static/). The latter introduces minor changes beyond expanded clock and port support in order to reduce flash usage.
+
+The original Adafruit implementation assumes perfectly fixed timing; by allowing small, non-critical timing variations, this core implements the functionality without requiring manual port selection.
+
+The libraries have not been fully tested at unusual clock speeds, but they are confirmed to work at 8, 10, 12, 16, and 20 MHz, and are expected to function at other frequencies greater than 7.3728 MHz.
+
+See the tinyNeoPixel documentation and the included examples for additional details.
 
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-# TODO - remove, rewrite, reword, format the rest
-
-<br/>
-<br/>
-
-## ATTinyCore 2.0.0 - lots of changes, some of them big, a few of them may cause breakage
-I cobbled ATTinyCore together with far less experience than I have now (indeed, I'd barely covered the basics when I started trying to get a working ATtiny841 core). I like to think I have a much better idea of how a core should be designed now. But this meant some terrible decisions were made in the past. Decisions that we have been paying the price for ever since. I decided that the core should be advanced to a state where the bad decisions have been fixed, and everything that needs to be exposed on the parts is exposed in a consistent manner (too much was done incrementally, and not enough planning was done, ever). This core should not expect any significant new feature enhancements from here on out. The new feature development will be for megaTinyCore and DxCore, as those represent the future of the AVR architecture. Bug fixes will still be made.
-The most significant changes are:
-1. **analogRead() and channel/pin numbers** ATTinyCore followed what the core it was based on did, which was to use analog channel numbers, not digital pin numbers for analogRead(). Originally, the An-constants were #defined as the number itself. Later, to make them work with the digital IO functions, I changed to  `#define An (n | 0x80)` - digital functions could check for the high bit, and if present, strip it off and use the analogInputToDigitalPin macro to find the digital pin number. I never did the inverse with analogRead() because it would have broken code which used the raw analog channel numbers. This is just absurd in this day and age, where every other core allows you to analogRead() digital pin numbers and it just works. As of 2.0.0, analogRead() takes either a digital pin number, a constant of the form An (one per analog pin, shown on pinout chart! corresponds directly to analog channels), one of the ADC_CHANNEL constants listed in the part-specific documentations pages (these are things like `ADC_TEMPERATURE` and `ADC_INTERNAL1V1`), or - assuming it has a differential ADC - one of the differential channels. If you were generating an analog channel at runtime, you can pass a number through the ADC_CH() macro to get a number that will be recognized as an analog **channel** number (this is preferred to directly setting the high bit, since it makes clear that you're doing it to get that analog channel). Several people to whom I have spoken about this to expressed disbelief that that was how it worked and unanimously favored this this change.
-2. **Differential channels!** Yeah - about half of the parts we support have them, and they can be useful for accurately measuring small differences in voltage. These vary per part - some are rather basic, while the t861 and t841 are very fancy - and are listed in full in the part-specific documentation. These are now fully supported. For parts that support both modes, there is also a way to select bipolar (-512 to 511) vs unipolar (0 to 1023) mode. Be warned that some parts only support one mode, and others only support the other, and some let you select it. *read the part specific docs for further information*.
-3. All the analog reference sources are named consistently, old (deprecated) names for references are still supported, but not recommended. **potential breakage** If you used to refer to a reference with a raw number, instead of the name (ie, if you did analogReference(0) instead of analogReference(DEFAULT), this will be totally broken for values other than zero (and 0 doesn't have a consistent meaning). The ADC_REF() macro can be used to convert from the REFS bits to a reference constant *if you must - but you shouldn't be using a raw number to select the reference if you want to be able to move it to different parts* - The 1.1v internal reference `INTERNAL1V1` is 2 on some parts, and 0 on others... almost everything has the 1.1v reference and everything can use Vcc, but that's really where the similarities end. If you are writing code that users might want to make work on any other part, you need to use the names, not numbers. With parts having at most 8 options for the analog reference, and most having fewer than that, I do not expect that this is a particularly burdensome requirement. .
-4. **Legacy PIN_xn constants gone** `PIN_An` constants have the standard meaning, ie, PIN_An is the digital pin that analog channel `An` is on. Previously some (but to my surprise and horror, not even all) parts had a set of `PIN_xn` constants defined that worked like the new `PIN_Pxn` ones do. I was reading pins_arduino.h from an official core a few weeks after implementing my `PIN_xn` constants for a bunch of parts and discovered that `PIN_An` was already in use meaning something different. Use `PIN_Pxn` where x is the letter of a port, and n is the number of a pin within that port.
-5. `PIN_Pxn` constants are in for all supported parts to refer to pins by port and bit. This is the recommended way to refer to pins, as it frees you from the need to consider which pin mapping is in use. If you soldered the LED to pin PB2, PIN_PB2 is going to control the LED no matter which pin mapping you have selected.
-6. For various historical reasons, some parts have up to 3 pin mappings. These are now named consistently, and listed and described in the part specific documentation - All parts have a recommended pin mapping, some of them have a second one for a specific VUSB board (digispark pro, MH-ET) with the pins numbered differently, and some of them have a "legacy" pin mapping with the pins in an order that makes less sense, and which makes converting between analog and digital pins harder (as in, if there is stuff determined at runtime, it uses more flash and is slower), but which has been widely used in the past and is what existing code may have been written for. A number of inconsistencies between these pin mappings (where information was missing from one or the other) have been fixed, and they are now formatted and commented consistently.
-7. The ATtiny1634 and ATtiny861 are now supported for Micronucleus. Test and demonstration boards will be available from my Tindie store. New versions of bootloader for all existing Micronucleus boards. Users should use the bootloader upgrade functionality to ensure that they have the latest version of the bootloader, and that it has their desired entry conditions (on reset pin, power on reset, power-on with pin held down, reset/power on w/reset held high (in case of disabled reset, holding the reset pin high during power on will make it enter bootloader - takes advantage of the fact that reset PIN bit always reads 0 when reset is not disabled... Actually, one wonders if it would work if you did PORTx |= 1 << RESETBIT; then test if that bit is set - does disabling reset actually make registers not store the value? If so, that would be even better - no dependence on hardware, clear the bit if could set it and run app, otherwise run bootloader. )
-
-## Main Documentation
-The documentation, broadly, falls into two categories. The General Documentation applies to all parts.
-
-Additionally, there are parameters that are specific to one or several families of parts. These cover the specifics of the peripherals on the parts (how Serial, I2C, and SPI are implemented on that hardware), the PWM frequencies that will be used at specific system clock frequencies, any additional options relating to the ADC such as differential inputs, and particularly notable or problematic errata, if any, applicable to this part. These are linked below.
-
-You should **always review that part-specific documentation** before making any choice of parts. The time it takes to read them is far less than the time it takes to redesign with a different part when you're nearly done and then trip over some unexpected limitation... I try to catch the differences that might pose this hazard and describe them in these documents.
-
-### [General Documentation](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/README.md) - This applies to all supported parts
-### [Wiring and required external components](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Wiring.md)
-
-### [Programming Guide](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Programming.md)
-### [Migration Guide - moving to ATTinyCore from a different ATtiny board package, or to ATTinyCore 2.0.0 from an earlier version](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Migration.md)
-### Current **strongly** recommended IDE version: 1.8.13
-
-
-### Timers and PWM
-All of the supported parts have hardware PWM (timer with output compare functionality) on at least one pin. See the part-specific documentation pages for a chart showing which pins have PWM. In addition to PWM, the on-chip timers are also used for millis() (and other timekeeping functions) and tone() - as well as by many libraries to achieve other functionality. Typically, a timer can only be used for one purpose at a time.
-
-On all supported parts, timekeeping functions are on timer0. This means that reconfiguring timer0 by manipulating it's registers will break `millis()` and `delay()`; this is not recommended unless millis is disabled entirely.
-
-On all parts except the tiny841/441 `tone()` is on timer1; on 841/441. tone() is on Timer2 to improve compatibility; with Tone moved onto timer2, the many libraries that use timer1 (Servo, TimerOne, and many others) can be used alongside `tone()` on the 841/441. Using `tone()` will prevent PWM from working on PWM pins controlled by Timer1 (Timer2 for 841/441), and manipulating it's registers will break `tone()`.
-
-Most of the ATtiny parts only have two timers. The attiny841 has a third timer, timer2, which is an exact copy of the lovely 16-bit timer1, and completely different from the timer2 that most atmega devices have. Libraries designed to work with "Timer2" will not work on any of these parts, even the 841/441.
-
-
-### Built-in tinyNeoPixel library
-
-The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. Prior to 2.0.0, a tools submemu was needed to select the port. This is no longer required (the adafruit code was written with zero tolerance for any divergances from ideal timing; allowing for tiny divergences at points where it doesn't matter was all it took to reimplememt this without the need for that submenu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/tinyNeoPixel.md) and included examples for more information.
-
-### Additional configuration options
-These are available from tools submenus
-
-#### Pin Remapping (x61, 441, 841 only, new in 2.0.0)
-The x61-series can use either PORTA or PORTB pins for the USI. This must be chosen at compile time - implementing swap() like the megaAVR parts have would impose excess overhead.
-
-The x41-series has two options for USART0 and two options for SPI. They are chosen independently, and the tools menu hence contains four options. (it's better than two menus, right?)
-
-## Memory Lock Bits, disabling Reset
-ATTinyCore will never set lock bits, nor will it set fuses to disable ISP programming (it is intentionally not made available as an option, since after doing that an HV programmer is needed to further reprogram the chip, and inexperienced users would be at risk of bricking their chips this way). The usual workflow when these bits are in use is Set other fuses -> Upload -> Test -> manually set the lockbits and/or fuses. This can be done from the command line using AVRdude. To expedite the process, you can enable "Verbose Upload" in preferences, do "burn bootloader" (the board and/or programmer does not need to be present), scroll to the top of the output window - the first line is the avrdude command used to burn the bootloader, including the paths to all the relevant files. It can be used as a template for the command you execute to set the fuse/lock bits.
-
-Disabling of reset is only an option for boards definitions with a bootloader which uses a sound flash-erase implementation (Optiboot presently does not, while the VUSB bootloaders which disable reset are in widespread use, seemingly without issue). We recommend against it in all cases. The 8 and 14 pin parts can be unbricked with a comparatively simple HVSP programmer (only 4-7 pins - 4 pins + reset for 8-pin, plus 3 more tied low on 14-pin). Everything with more pins needs an HVPP programmer, involving a wire connected to every pin or almost every pin on the chip. The sheer number of connections makes it unlikely that it could ever be unbricked in-system if the "system" is much more than a breakout board. HVPP is extremely exotic within the hobby community, such that I've never heard anyone talk about unbricking with HVPP.
-
-**USE EXTREME CAUTION WHEN USING THE USB UPDATE FOR MICRONUCLEUS** as you can update to a version of the bootloader that will not support your board.
-
-
-## Pin Mappings
-
+## Pin mappings
 
 ### ATtiny441/841
 ![x41 pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x41.jpg "Arduino Pin Mapping for ATtiny841/441")
@@ -445,28 +402,3 @@ Disabling of reset is only an option for boards definitions with a bootloader wh
 
 ### ATtiny43U
 ![ATtiny43U pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_43.jpg "Arduino Pin Mapping for ATtiny43")
-
-
-Note that two pin mappings are supported for some devices to retain backwards compatibility with other cores - the pin mapping may be chosen from a menu.
-
-Note that analog pin numbers (ex A0 ) cannot be used with digitalWrite()/digitalRead()/analogWrite() - all pins have a digital pin number. Analog pin number should only be used for analogRead() - this represents a departure from the behavior used in the official AVR boards. This enables us to expose the advanced ADC functionality available on some of the ATtiny parts with minimal impact, as clearly written code is unlikely to fall afoul of this anyway.
-
-## Caveats
-* Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible. ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each programming operation. This may be due to bugs in USBAsp firmware - See this thread on the Arduino forums for information on updated USBAsp firmware: [http://forum.arduino.cc/index.php?topic=363772](http://forum.arduino.cc/index.php?topic=363772) (Links to the new firmware are on pages 5-6 of that thread - the beginning is largely a discussion of the inadequacies of the existing firmware)
-* At >4v, the speed of the internal oscillator on 828, 1634 and 841 parts increases significantly - enough that serial (and hence the bootloader) does not work. Significant enhancements have been made on this front in 1.4.0; reburning bootloader should sort it out. These are further improved in 2.0.0. Avoid using 115200 baud and 57600 baud if using the internal oscillator and running an 828, 1634, or x41 at 4V or higher - those speeds are over 2% off due to baud calculation error in the same direction that the clock speed is off.
-* For that matter, don't use 115200 baud or 57600 baud on any classic AVR with a hardware serial port at 8/16 MHz, especially if they or the thing they are communicating with is using an internal oscillator. 115200 MHz is a failure prone baud rate at 16 MHz, as 57600 is at 8 MHz as well. Those speeds should be used only with a "USART crystal" as clock source, or a 12 MHz or 20 MHz clock source. For 8 and 16 MHz with hardware serial, 38400, 76800, and (at 16 MHz) 153600 get much better baud rate accuracy.
-* There is a right and a wrong way to perform a software reset.
-  * Unless you are using Optiboot and wish to reset *and* have the bootloader run, do not reset from software via `__asm__ __volatile__ (jmp 0)` - that performs a "dirty reset". Instead, enable the watchdog timer, set to reset the device on timeout, and then enter an infinite loop and wait for the reset 16ms later.
-  * Do not attempt to generate a software reset by connecting an I/O pin to reset and driving it low; this is specifically warned about in the datasheet.
-  * If using the WDT reset on an Optiboot board, no additional actions are necessary; The bootloader will see that the reset cause was the WDT, assume that it was the thing that generated the reset, turn off the WDT and start the application.
-  * If using the WDT reset on a non-optiboot board definition, you must turn it off at the very start of setup() - the chip will reset with the watchdog still running at the minimum timeout.
-  * Dirty resets are a Bad Thing. You want to do anything you can to avoid having to generate one, and to avoid accidentally generating one (a dirty reset is the normal result of smashing the stack or a number of other common programming errors - this is responsible most hangs caused by software bugs)
-  * The only time that a dirty reset is acceptable (it is never recommended) is when a bootloader is in use and you need to make the bootloader run from within the app. **if you do this you MUST ensure the following**
-    * (Optiboot) Timer1 and the UART (if any) used by the bootloader has been reset to the POR settings (all registers associated with peripheral set to 0).
-    * Interrupts must be disabled.
-    * If the chip is running at a prescaled or tuned clock speed, you must turn off the prescaling (unless chip was bootloaded with 1 MHz optiboot, which is used for 2 and 4 MHz internal on most parts), in which case it must be reset to divide by 8).
-    * You must point the stack pointer to the end of the flash (`SP = RAMEND - 1`).
-    * Failure to observe these precautions will likely result in the bootloader failing to function properly, and possibly leave you in a state where a physical reset button press is required!
-    * Whatever you do, don't try to bring this trick with you onto a modern AVR - there's no reason to do that over there (they finally have a software reset function) and the unintended dirty resets can be far more dangerous than they are here (a necessary tradeoff to get some very nice interrupt-related features). On my modern AVR cores (megaTinyCore and DxCore) I actually detect that a dirty reset has happened at the very early stages of the boot process, and fire software reset automatically.
-    * Seriously, don't do this unless you really have your back to the wall and there's just no other way.
-
