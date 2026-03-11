@@ -1,4 +1,4 @@
-# ATTinyCore library - ATtiny classic examples and helper functions
+# TinyCore library - ATtiny classic examples and helper functions
 This library serves two purposes:
 * First, it's original purpose: As a way to get example code specific to the core or the parts supported by the core to the user (there isn't a facility provided for a core to associate examples with the core explicitly), such as using the temperature sensor, or the ADC noise reduction mode, etc.
 * Second, it provides a way to add helper functions to take advantage of chip features that don't belong in the core itself, but which are specific to only a few parts, and don't make sense as a separate library either.
