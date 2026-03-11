@@ -1,5 +1,5 @@
 # ATtiny828(R)
-![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny828")
+![828 Pin Mapping](Pinout_828.png "Arduino Pin Mapping for ATtiny828")
 
 Specification         |    ATtiny828   |    ATtiny828   |
 ----------------------|----------------|----------------|

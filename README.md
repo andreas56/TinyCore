@@ -375,32 +375,35 @@ See the tinyNeoPixel documentation and the included examples for additional deta
 ## Pin mappings
 
 ### ATtiny441/841
-![x41 pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x41.jpg "Arduino Pin Mapping for ATtiny841/441")
+![x41 pin mapping](/avr/extras/Pinout_x41.png "Arduino Pin Mapping for ATtiny841/441")
 
 ### ATtiny1634
-![1634 pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_1634.jpg "Arduino Pin Mapping for ATtiny1634")
+![1634 pin mapping](/avr/extras/Pinout_1634.png "Arduino Pin Mapping for ATtiny1634")
 
 ### ATtiny828
-![828 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_828.jpg "Arduino Pin Mapping for ATtiny828")
+![828 Pin Mapping](/avr/extras/Pinout_828.png "Arduino Pin Mapping for ATtiny828")
 
 ### ATtiny25/45/85
-![x5 pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x5.jpg "Arduino Pin Mapping for ATtiny85/45/25")
+![x5 pin mapping](/avr/extras/Pinout_x5.png "Arduino Pin Mapping for ATtiny85/45/25")
 
 ### ATtiny24/44/84
-![x4 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x4.jpg "Arduino Pin Mapping for ATtiny84/44/24")
+![x4 Pin Mapping](/avr/extras/Pinout_x4.png "Arduino Pin Mapping for ATtiny84/44/24")
 
 ### ATtiny261/461/861
-![x61 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x61.jpg "Arduino Pin Mapping for ATtiny861/461/261")
+![x61 Pin Mapping](/avr/extras/Pinout_x61.png "Arduino Pin Mapping for ATtiny861/461/261")
 
 ### ATtiny87/167
-![x7 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x7.jpg "Arduino Pin Mapping for ATtiny167/87")
+![x7 Pin Mapping](/avr/extras/Pinout_x7.png "Arduino Pin Mapping for ATtiny167/87")
 
 ### ATtiny48/88
-![x8 SMD Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x8.jpg "Arduino Pin Mapping for ATtiny88/48 in TQFP")
-![x8 DIP Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x8-PU.jpg "Arduino Pin Mapping for ATtiny88/48 in DIP")
+![x8 SMD Pin Mapping](/avr/extras/Pinout_x8.png "Arduino Pin Mapping for ATtiny88/48 in TQFP")
+![x8 DIP Pin Mapping](/avr/extras/Pinout_x8_PU.png "Arduino Pin Mapping for ATtiny88/48 in DIP")
 
 ### ATtiny2313/4313
-![x313 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x313.jpg "Arduino Pin Mapping for ATtiny4313/2313")
+![x313 Pin Mapping](/avr/extras/Pinout_x313.png "Arduino Pin Mapping for ATtiny4313/2313")
 
 ### ATtiny43U
-![ATtiny43U pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_43.jpg "Arduino Pin Mapping for ATtiny43")
+![ATtiny43U pin mapping](/avr/extras/Pinout_43.ng "Arduino Pin Mapping for ATtiny43")
+
+### ATtiny26
+![ATtiny26 pin mapping](/avr/extras/Pinout_26.png "Arduino Pin Mapping for ATtiny26")

@@ -1,5 +1,5 @@
 # ATtiny43U
-![43 pin mapping](Pinout_43.jpg "Arduino Pin Mapping for ATtiny 43")
+![43 pin mapping](Pinout_43.png "Arduino Pin Mapping for ATtiny 43")
 
 | Specification           |    ATtiny43U   |
 |-------------------------|----------------|

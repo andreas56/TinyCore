@@ -1,5 +1,5 @@
 # ATtiny 2313/4313
-![x313 pin mapping](Pinout_x313.jpg "Arduino Pin Mapping for ATtiny x313-family")
+![x313 pin mapping](Pinout_x313.png "Arduino Pin Mapping for ATtiny x313-family")
 
 Specification         |    ATtiny4313  |   ATtiny2313A  |    ATtiny2313  |
 ----------------------|----------------|----------------|----------------|

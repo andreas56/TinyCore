@@ -1,5 +1,5 @@
 # ATtiny 26
-![tiny26 pin mapping](Pinout26_PRELIMINARY.png "Arduino Pin Mapping for ATtiny 26");
+![tiny26 pin mapping](Pinout_26.png "Arduino Pin Mapping for ATtiny 26");
 
 Specifications |  .
 ------------ | -------------
