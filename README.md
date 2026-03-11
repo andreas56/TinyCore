@@ -403,7 +403,7 @@ See the tinyNeoPixel documentation and the included examples for additional deta
 ![x313 Pin Mapping](/avr/extras/Pinout_x313.png "Arduino Pin Mapping for ATtiny4313/2313")
 
 ### ATtiny43U
-![ATtiny43U pin mapping](/avr/extras/Pinout_43.ng "Arduino Pin Mapping for ATtiny43")
+![ATtiny43U pin mapping](/avr/extras/Pinout_43.png "Arduino Pin Mapping for ATtiny43")
 
 ### ATtiny26
 ![ATtiny26 pin mapping](/avr/extras/Pinout_26.png "Arduino Pin Mapping for ATtiny26")
