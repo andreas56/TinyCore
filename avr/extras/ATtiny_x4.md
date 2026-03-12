@@ -12,20 +12,22 @@
 | Differential ADC                 | 1/20x gain       | 1/20x gain       | 1/20x gain       |
 | PWM Channels                     | 4: PA5-7, PB2    | 4: PA5-7, PB2    | 4: PA5-7, PB2    |
 | Interfaces                       | USI              | USI              | USI              |
+| Bootloader pins (RX/TX)          | PA2/PA1          | PA2/PA1          | PA2/PA1          |
 | Int. Oscillator (MHz)            | 8, 4, 2, 1       | 8, 4, 2, 1       | 8, 4, 2, 1       |
 | External Crystal                 | All Standard     | All Standard     | All Standard     |
 | External Clock                   | All Standard     | All Standard     | All Standard     |
 | Int. WDT Oscillator              | 128 kHz          | 128 kHz          | 128 kHz          |
 | LED_BUILTIN                      | PIN_PB2          | PIN_PB2          | PIN_PB2          |
 
-The 24/44/84 and 24a/44a/84a are functionally identical; the latter replaced the former in 2008, and uses slightly less power, and actual ATtiny84 parts are rarely seen in circulation today. They have the same signatures and are fully interchangible, except that the internal oscillator on the x4 not-A is worse (enough-so that the micronucleus bootloader may not be able to work on them). It is extremely common to refer to the ATtiny84a as an ATtiny84, and actual x4-not-A parts are exotic. Microchip still makes them, but charges a large premium for them to encourage people to migrate to less obsolete hardware.
+### Urboot bootloader
+This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny24/44/84, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792, 3840, or 7936 bytes available for user code on the ATtiny24, 44, and 84 respectively. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
 
-These parts are available in DIP-14, SOIC-14, and 4mm x 4mm QFN-20.
+A critical improvement over Optiboot is that Urboot actively protects both itself and the reset vector from being overwritten during flash operations, preventing the bootloader from bricking itself. The bootloader remains intact regardless of what is uploaded, making it a reliable choice.
 
-Two pinouts are available for compatibility with other cores, see below for more information. Be sure you are using the pinout you think you are!
+No pre-compiled bootloader binaries are distributed with this core, instead, Avrdude generates the appropriate bootloader on the fly during upload.
+The default serial upload pins for these chips are PA1 (TX) and PA2 (RX). The WDT timeout, UART pins, baud rate, and other bootloader parameters can be customized by editing the relevant entries in boards.txt or in your platformio.ini project configuration file.
 
-## Programming
-Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
+The AVR internal oscillator is neither highly accurate nor necessarily tightly calibrated from the factory. Since a stable system clock is essential for asynchronous protocols such as UART, the bootloader can be configured to apply an oscillator correction factor. This is exposed as a Tools menu option, with adjustable compensation ranging from -5.00% to +5.00%.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny84/44, operating using software serial at at the standard ATTinyCore baud rates (which have changed in 2.0.0 for improved reliability see [the Optboot reference](./Ref_Optiboot.md)) - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.

@@ -12,6 +12,7 @@
 | Differential ADC                 | 1/20x gain       | 1/20x gain       | 1/20x gain       |
 | PWM Channels                     | 3: PB0, PB1/2    | 3: PB0, PB1/2    | 3: PB0, PB1/2    |
 | Interfaces                       | USI              | USI              | USI              |
+| Bootloader pins (RX/TX)          | PB1/PB0          | PB1/PB0          | PB1/PB0          |
 | Int. Oscillator or PLL (MHz)     | 16, 8, 4, 2, 1   | 16, 8, 4, 2, 1   | 16, 8, 4, 2, 1   |
 | External Crystal                 | All Standard     | All Standard     | All Standard     |
 | External Clock                   | All Standard     | All Standard     | All Standard     |
