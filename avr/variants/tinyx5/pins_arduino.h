@@ -33,7 +33,7 @@
 #define PIN_PB5  ( 5) /* RESET */
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN (PIN_PB1)
+  #define LED_BUILTIN (PIN_PB2)
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
