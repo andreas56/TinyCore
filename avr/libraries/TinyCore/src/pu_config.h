@@ -269,6 +269,32 @@
     #define PU_PCIF PCIF2
   #endif
 
+#elif defined(__AVR_ATtiny43__) || defined(__AVR_ATtiny43U__)
+  #ifndef PU_TX
+    #define PU_TX A,4
+  #endif
+  #ifndef PU_RX
+    #define PU_RX A,4
+  #endif
+  #ifndef PU_PCINT_vect
+    #define PU_PCINT_vect PCINT0_vect
+  #endif
+  #ifndef PU_PCINT_CTRL
+    #define PU_PCINT_CTRL GIMSK
+  #endif
+  #ifndef PU_PCMSK
+    #define PU_PCMSK PCMSK0
+  #endif
+  #ifndef PU_PCIFR
+    #define PU_PCIFR GIFR
+  #endif
+  #ifndef PU_PCIE
+    #define PU_PCIE PCIE0 
+  #endif
+  #ifndef PU_PCIF
+    #define PU_PCIF PCIF0
+  #endif
+
 #elif defined(__AVR_ATmega48__) || defined(__AVR_ATmega48P__)  || defined(__AVR_ATmega48PB__)  \
 || defined(__AVR_ATmega88__)    || defined(__AVR_ATmega88P__)  || defined(__AVR_ATmega88PB__)  \
 || defined(__AVR_ATmega168__)   || defined(__AVR_ATmega168P__) || defined(__AVR_ATmega168PB__) \
