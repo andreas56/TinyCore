@@ -36,17 +36,17 @@ TinyCore is a fork of the [ATTinyCore 2.0.0 branch](https://github.com/SpenceKon
 ## Supported microcontrollers
 Each chip family has different pinouts, peripherals, and capabilities. Some differences are obvious, while others are subtle and can affect how features behave. Please read the provided for the specific chip family you are using by clocking the links below. Here you'll find pin mappings, specs, and other important core-related details.
 
-* [ATtiny25/45/85](/avr/extras/ATtiny_x5.md)
-* [ATtiny24/44/84](/avr/extras/ATtiny_x4.md)
-* [ATtiny441/841](/avr/extras/ATtiny_x41.md)
-* [ATtiny261/461/861](/avr/extras/ATtiny_x61.md)
-* [ATtiny87/167](/avr/extras/ATtiny_x7.md)
-* [ATtiny48/88](/avr/extras/ATtiny_x8.md)
-* [ATtiny2313/4313](/avr/extras/ATtiny_x313.md)
-* [ATtiny1634](/avr/extras/ATtiny_1634.md)
-* [ATtiny828](/avr/extras/ATtiny_828.md)
-* [ATtiny43](/avr/extras/ATtiny_43.md)
-* [ATtiny26](/avr/extras/ATtiny_26.md)
+* [ATtiny25/45/85](avr/extras/ATtiny_x5.md)
+* [ATtiny24/44/84](avr/extras/ATtiny_x4.md)
+* [ATtiny441/841](avr/extras/ATtiny_x41.md)
+* [ATtiny261/461/861](avr/extras/ATtiny_x61.md)
+* [ATtiny87/167](avr/extras/ATtiny_x7.md)
+* [ATtiny48/88](avr/extras/ATtiny_x8.md)
+* [ATtiny2313/4313](avr/extras/ATtiny_x313.md)
+* [ATtiny1634](avr/extras/ATtiny_1634.md)
+* [ATtiny828](avr/extras/ATtiny_828.md)
+* [ATtiny43](avr/extras/ATtiny_43.md)
+* [ATtiny26](avr/extras/ATtiny_26.md)
 
 <details>
 <summary><b>See the specification table for comparison</b></summary>
@@ -162,14 +162,15 @@ digitalWrite(0, HIGH);
 ```
 
 ### Internal oscillator calibration (OSCCAL)
-The internal 8 MHz oscillator on these microcontrollers aren't all that accurate, and is both temperature and voltage dependent. Depending on the application, it might be necessary to perform an oscillator calibration. TinyCore provides a simple [Oscillator calibration sketch](/avr/libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that uses the incoming UART data to calibrate its clock. Read more about this in the [device spesific documentation](#supported-microcontrollers).
+The internal 8 MHz oscillator on these microcontrollers aren't all that accurate, and is both temperature and voltage dependent. Depending on the application, it might be necessary to perform an oscillator calibration. TinyCore provides a simple [Oscillator calibration sketch](avr/libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that uses the incoming UART data to calibrate its clock. Read more about this in the [device spesific documentation](#supported-microcontrollers).
 
-![OSCCAL procedure](/avr/extras/OSCCAL_procedure.gif "OSCCAL procedure")
+<img src="avr/extras/OSCCAL_procedure.gif" width="500">
+
 
 
 ## Write to own flash
 TinyCore uses the excellent Urboot bootloader, written by [Stefan Rueger](https://github.com/stefanrueger). Urboot supports flash writing within the running application, meaning that content from e.g. a sensor can be stored in the flash memory directly without needing external memory. Flash memory is much faster than EEPROM, and can handle at least 10,000 write cycles before wear becomes an issue.
-For more information on how it works and how you can use this in your own application, check out the [Flash_put_get](avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) and [Flash_iterate](/avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) for useful examples on how you can store strings, structs, and variables to flash and retrieve them afterward.
+For more information on how it works and how you can use this in your own application, check out the [Flash_put_get](avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) and [Flash_iterate](avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) for useful examples on how you can store strings, structs, and variables to flash and retrieve them afterward.
 
 
 ## Programmers
@@ -361,7 +362,7 @@ Some parts will additionally have one or two additional configuration functions 
 <summary>Read more about this configuration here</summary>
 
 #### analogGain()
-analogGain() is unique to the ATtiny841/441, which has too many differential channels and gain setting combinations to fit into a single byte. It is documented in the [ATtiny841/441 page](/avr/extras/ATtiny_x41.md) as it only applies to those devices. All others with programmable gain pass the gain setting as part of the constant.
+analogGain() is unique to the ATtiny841/441, which has too many differential channels and gain setting combinations to fit into a single byte. It is documented in the [ATtiny841/441 page](avr/extras/ATtiny_x41.md) as it only applies to those devices. All others with programmable gain pass the gain setting as part of the constant.
 
 #### setADCBipolarMode(bool bipolar)
 Enables or disables bipolar mode for the differential ADC on supported devices. Bipolar mode (true) returns a signed value representing the voltage difference between the positive and negative inputs. For example, with a 1.0 V reference, a +0.25 V difference returns +128, while reversing the inputs returns −128.
@@ -393,35 +394,35 @@ See the tinyNeoPixel documentation and the included examples for additional deta
 ## Pin mappings
 
 ### ATtiny441/841
-![x41 pin mapping](/avr/extras/Pinout_x41.png "Arduino Pin Mapping for ATtiny841/441")
+![x41 pin mapping](avr/extras/Pinout_x41.png "Arduino Pin Mapping for ATtiny841/441")
 
 ### ATtiny1634
-![1634 pin mapping](/avr/extras/Pinout_1634.png "Arduino Pin Mapping for ATtiny1634")
+![1634 pin mapping](avr/extras/Pinout_1634.png "Arduino Pin Mapping for ATtiny1634")
 
 ### ATtiny828
-![828 Pin Mapping](/avr/extras/Pinout_828.png "Arduino Pin Mapping for ATtiny828")
+![828 Pin Mapping](avr/extras/Pinout_828.png "Arduino Pin Mapping for ATtiny828")
 
 ### ATtiny25/45/85
-![x5 pin mapping](/avr/extras/Pinout_x5.png "Arduino Pin Mapping for ATtiny85/45/25")
+![x5 pin mapping](avr/extras/Pinout_x5.png "Arduino Pin Mapping for ATtiny85/45/25")
 
 ### ATtiny24/44/84
-![x4 Pin Mapping](/avr/extras/Pinout_x4.png "Arduino Pin Mapping for ATtiny84/44/24")
+![x4 Pin Mapping](avr/extras/Pinout_x4.png "Arduino Pin Mapping for ATtiny84/44/24")
 
 ### ATtiny261/461/861
-![x61 Pin Mapping](/avr/extras/Pinout_x61.png "Arduino Pin Mapping for ATtiny861/461/261")
+![x61 Pin Mapping](avr/extras/Pinout_x61.png "Arduino Pin Mapping for ATtiny861/461/261")
 
 ### ATtiny87/167
-![x7 Pin Mapping](/avr/extras/Pinout_x7.png "Arduino Pin Mapping for ATtiny167/87")
+![x7 Pin Mapping](avr/extras/Pinout_x7.png "Arduino Pin Mapping for ATtiny167/87")
 
 ### ATtiny48/88
-![x8 SMD Pin Mapping](/avr/extras/Pinout_x8.png "Arduino Pin Mapping for ATtiny88/48 in TQFP")
-![x8 DIP Pin Mapping](/avr/extras/Pinout_x8_PU.png "Arduino Pin Mapping for ATtiny88/48 in DIP")
+![x8 SMD Pin Mapping](avr/extras/Pinout_x8.png "Arduino Pin Mapping for ATtiny88/48 in TQFP")
+![x8 DIP Pin Mapping](avr/extras/Pinout_x8_PU.png "Arduino Pin Mapping for ATtiny88/48 in DIP")
 
 ### ATtiny2313/4313
-![x313 Pin Mapping](/avr/extras/Pinout_x313.png "Arduino Pin Mapping for ATtiny4313/2313")
+![x313 Pin Mapping](avr/extras/Pinout_x313.png "Arduino Pin Mapping for ATtiny4313/2313")
 
 ### ATtiny43U
-![ATtiny43U pin mapping](/avr/extras/Pinout_43.png "Arduino Pin Mapping for ATtiny43")
+![ATtiny43U pin mapping](avr/extras/Pinout_43.png "Arduino Pin Mapping for ATtiny43")
 
 ### ATtiny26
-![ATtiny26 pin mapping](/avr/extras/Pinout_26.png "Arduino Pin Mapping for ATtiny26")
+![ATtiny26 pin mapping](avr/extras/Pinout_26.png "Arduino Pin Mapping for ATtiny26")
