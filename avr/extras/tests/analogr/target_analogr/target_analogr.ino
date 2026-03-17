@@ -1,8 +1,9 @@
-#define WAIT 100
+#define WAIT_MS 100
 #define TIMEOUT_MS 90000
 #define PULSE_MS 5
-#define INTERVAL_MS 20
 #define COMPIN 0
+#define ANALOG_LOW 15
+#define ANALOG_HIGH 1008
 
 unsigned long start;
 // number of digital pins without the RESET pin, for ATtinyx8 only the one for the DIP footprint
@@ -13,6 +14,7 @@ const int iopins = NUM_DIGITAL_PINS - 1;
 #endif
 int phase;
 int pin = 0;
+volatile int r;
 
 void setup()
 {
@@ -44,12 +46,14 @@ void loop()
   case 3: /* send next PWM pin number or termination signal = iopins + 1 */
     delay(150);
     while (pin < iopins) {
-      if digitalPinHasPWM(pin) break;
+      if (digitalPinToAnalogInput(pin) >= 0) break;
       pin++;
     }
-    if (pin >= iopins) { // report success
-      send_pulses(iopins+2);
+    if (pin >= iopins) { // report
+      send_pulses(iopins+1);
       for (int i = 0; i < iopins; i++) pinMode(i, INPUT);
+      digitalWrite(COMPIN, LOW);
+      pinMode(COMPIN, OUTPUT);
       while (1);
     } else {
        send_pulses(pin+1);
@@ -57,17 +61,16 @@ void loop()
     start = millis();
     phase = 4;
     break;
-  case 4: /* execute analogwrite commands */
-    pinMode(pin, OUTPUT);
-    analogWrite(pin, 10);
-    delay(INTERVAL_MS);
-    analogWrite(pin, 50);
-    delay(INTERVAL_MS);
-    analogWrite(pin, 90);
-    delay(INTERVAL_MS);
-    analogWrite(pin, 100);
-    delay(INTERVAL_MS);
-    pinMode(pin, INPUT);
+  case 4: /* check for LOW and HIGH values */
+    delay(10);
+    r = analogRead(pin);
+    start = millis();
+    while (analogRead(pin) > ANALOG_LOW && millis() - start < WAIT_MS);
+    if (analogRead(pin) > ANALOG_LOW) report_failure();
+    delay(10);
+    while (analogRead(pin) < ANALOG_HIGH && millis() - start < WAIT_MS);
+    if (analogRead(pin) < ANALOG_HIGH) report_failure();
+    delay(200);
     pin++;
     phase = 3;
     start = millis();
@@ -80,6 +83,8 @@ void loop()
 
 void report_failure()
 {
+  delay(200);
+  send_pulses(iopins+1);
   for (int i = 0; i < iopins; i++) pinMode(i, INPUT);
   while (1);
 }

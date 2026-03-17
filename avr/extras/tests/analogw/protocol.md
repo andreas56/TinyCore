@@ -1,7 +1,5 @@
 # Test Protocol: Analog write
 
-# Test Protocol
-
 1. Set up the host MCU board (Uno, Nano, or Mega) and target chip/board on a breadboard. 
 2. Erase the target board, so that all I/O pins are high impedance.
 3. Connect all host and target GPIOs by using a number 2 higher on the host: 0 -> 2, 1 -> 3, ... and from target pin 11 (host pin 13) onwards, add 3 (in order to leave out LED_BUILTIN). Actually, one only needs to connect the pins with PWM.

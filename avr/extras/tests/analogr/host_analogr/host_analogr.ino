@@ -1,14 +1,14 @@
 #define TIMEOUT_MS 30000
 #define BLINKFAST_MS 100
 #define BLINKSLOW_MS 1000
-#define WAITFORPULSE_uS 10000UL
-#define PWMTIMEOUT_MS 100
+#define INTERVAL_MS 50
 #define MAXPULSE_MS 15
 #define HPIN(p) (p>=LED_BUILTIN-2 ? p+3 : p+2)
 #define COMPIN 2
 
+
 unsigned long start;
-int phase, pwm;
+int phase, lastadc, adc;
 int iocount;
 
 
@@ -43,32 +43,36 @@ void loop()
     Serial.print(F("Number of I/O pins: "));
     Serial.println(iocount);
     phase = 3;
-    Serial.println(F("Phase 3: Wait for PWM pin number"));
+    Serial.println(F("Phase 3: Wait for ADC pin number"));
     start = millis();
+    adc = -1;
     break;
-  case 3: /* wait for PWM pin number */
+  case 3: /* wait for adc pin number */
     pinMode(COMPIN, INPUT_PULLUP); 
     if (digitalRead(COMPIN) == HIGH)
       return;
-    pwm = count_pulses() - 1; // number is one to high to allow for pin 
+    lastadc = adc;
+    adc = count_pulses() - 1; // number is one to high to allow for pin 0
     pinMode(COMPIN, INPUT); 
-    if (pwm == iocount) { // we are ready
-      report_success();
+    if (adc == iocount) { // we are ready
+      pinMode(COMPIN, INPUT_PULLUP); 
+      delay(100);
+      if (digitalRead(COMPIN) == LOW) report_success();
+      else report_failure();
     }
-    Serial.print(F("PWM pin to test: "));
-    Serial.println(pwm);
+    Serial.print(F("ADC pin to test: "));
+    Serial.println(adc);
     phase = 4;
     start = millis();
-    Serial.println(F("Phase 4: Check PWM pin"));
+    Serial.println(F("Phase 4: Check ADC pin"));
     break;
   case 4:
-    pinMode(HPIN(pwm), INPUT);
-    if (!waitfor(pwm, 10)) report_failure();
-    if (!waitfor(pwm, 50)) report_failure();
-    if (!waitfor(pwm, 90)) report_failure();
-    if (!waitfor(pwm,100)) report_failure();
-    delay(20);
-    Serial.println("PWM check OK");
+    digitalWrite(HPIN(adc), LOW);
+    pinMode(HPIN(adc), OUTPUT);
+    delay(50);
+    digitalWrite(HPIN(adc), HIGH);
+    delay(50);
+    pinMode(HPIN(adc), INPUT);
     start = millis();
     phase = 3;
     break;
@@ -76,35 +80,6 @@ void loop()
     report_failure();
   }
 }
-
-bool waitfor(int pin, int percent)
-{
-  unsigned long start = millis();
-  long low, high, duty;
-  bool succ = false;
-
-  while (millis() - start < PWMTIMEOUT_MS && !succ) {
-    high = pulseIn(HPIN(pin), HIGH, WAITFORPULSE_uS);
-    low = pulseIn(HPIN(pin), LOW, WAITFORPULSE_uS);
-    if (high == 0 || low == 0) continue;
-    duty = high*100/(high+low);
-    if (duty*3 >= percent-20 && duty*3 <= percent + 20) {
-      succ = true; 
-    }
-  }
-  if (succ) { 
-    high = pulseIn(HPIN(pin), HIGH, WAITFORPULSE_uS);  
-    low = pulseIn(HPIN(pin), LOW, WAITFORPULSE_uS);
-    duty = high*100/(high+low);
-    Serial.print(F("PWM check ")); 
-    Serial.print(percent);
-    Serial.print(F("%: "));
-    Serial.print(duty);
-    Serial.println(F("% duty cycle"));
-  }
-  return succ;
-}
-
 
 void report_success()
 {
@@ -129,7 +104,8 @@ void report_failure()
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.print(F("*** Failure in phase "));
   Serial.println(phase);
- 
+  Serial.print(F("*** after testing pin "));
+  Serial.println(lastadc);
   while (1) {
     if (millis() - start > BLINKFAST_MS) {
       on = !on;

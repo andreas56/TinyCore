@@ -1,4 +1,4 @@
-# Test Protocol
+# Test Protocol: Digital read/write
 
 1. Set up the host MCU board (Uno, Nano, or Mega) and target chip/board on a breadboard. 
 2. Erase the target board, so that all I/O pins are high impedance.
