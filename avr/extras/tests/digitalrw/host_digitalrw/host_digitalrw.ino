@@ -8,7 +8,7 @@
 
 unsigned long start;
 int phase, subphase;
-int iocount;
+int iocount, led_builtin = -1;
 int lowcount = 0;
 
 
@@ -38,9 +38,14 @@ void loop()
     if (digitalRead(COMPIN) == HIGH)
       return;
     iocount = count_pulses();
-    pinMode(COMPIN, INPUT);
     Serial.print(F("Number of I/O pins: "));
     Serial.println(iocount);
+    while (digitalRead(COMPIN) == HIGH && millis() - start < TIMEOUT_MS);
+    if (millis() - start > TIMEOUT_MS) report_failure();
+    led_builtin = count_pulses() - 1;
+    Serial.print(F("LED_BULTIN="));
+    Serial.println(led_builtin);
+    pinMode(COMPIN, INPUT);
     phase = 3;
     Serial.println(F("Phase 3: Wait for all pins to go high"));
     start = millis();
@@ -82,8 +87,15 @@ void loop()
       start = millis();
     }
     break;
-  case 8: /* Switch all pins to INPUT_PULLUP */
-    for (i = 0; i < iocount; i++) pinMode(HPIN(i), INPUT_PULLUP);
+  case 8: /* Switch all pins to INPUT_PULLUP except LED_BUILTIN */
+    for (i = 0; i < iocount; i++) {
+      if (i == led_builtin) {
+        digitalWrite(HPIN(i), HIGH);
+        pinMode(HPIN(i), OUTPUT);
+      } else {
+        pinMode(HPIN(i), INPUT_PULLUP);
+      }
+    }
     phase = 9;
     Serial.println(F("Phase 9: Wait for all pins to be HIGH inputs"));
     start = millis();

@@ -4,21 +4,23 @@ The tests in this folder each check one particular basic functionality. They are
 
 
 
-| Tests                                       | ATtinyX5 | ATtinyX4 | ATtinyX41 | ATtinyX61 | ATtinyX7 | ATtinyX8 | ATtinyX313 | ATtiny1634 | ATtiny828 | ATtiny43 | ATtiny26 |
-| ------------------------------------------- | -------- | -------- | --------- | --------- | -------- | -------- | ---------- | ---------- | --------- | -------- | -------- |
-| `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| `Serial.print()` and `Serial.read()`        | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| `analogRead()`on all supported pins         | 🟢        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚫️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| SPI master                                  | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| SPI slave                                   | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Wire master                                 | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Wire slave                                  | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Neopixel library/libraries                  | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
+| Tests                                       | ATtinyX5 | ATtinyX4 | ATtinyX41 | *ATtinyX61* | *ATtinyX7* | *ATtinyX8* | ATtinyX313 | ATtiny1634 | ATtiny828 | *ATtiny43* | *ATtiny26* |
+| ------------------------------------------- | -------- | -------- | --------- | ----------- | ---------- | ---------- | ---------- | ---------- | --------- | ---------- | ---------- |
+| `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | 🟢          | ⚪️          |
+| `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | 🟡          | ⚪️          |
+| `Serial.print()` and `Serial.read()`        | ⚪️        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | ⚪️          | ⚪️          |
+| `analogRead()`on all supported pins         | 🟢        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚫️          | ⚪️          | ⚪️         | 🟢          | ⚪️          |
+| SPI master                                  | ⚪️        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | ⚪️          | ⚪️          |
+| SPI slave                                   | ⚪️        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | ⚪️          | ⚪️          |
+| Wire master                                 | ⚪️        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | ⚪️          | ⚪️          |
+| Wire slave                                  | ⚪️        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | ⚪️          | ⚪️          |
+| Neopixel library/libraries                  | ⚪️        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | ⚪️          | ⚪️          |
+| Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | ⚪️           | ⚪️          | ⚪️          | ⚪️          | ⚪️          | ⚪️         | ⚪️          | ⚪️          |
 
 🟢 = Works
 🔴 = Does not work
 🟡 = Partially works
 ⚫️ = Not implemented
 ⚪️ = Untested
+
+ATtiny43U: analogWrite failed on pins 4 and 5. Instead of giving a 50% value, it gives a 90% value. 

@@ -15,14 +15,14 @@ The host board will report success over the serial line and blink 1 sec on/1 sec
 The protocol is as follows:
 
 1. Host pin 2 (connected to target pin 0) is set to INPUT_PULLUP. Now, the host waits for maximal 30 seconds, waiting for the target to start. 30 seconds is also the time-out later on, after which the host will reset the target (if possible) and report failure.
-2. The target will report the number of digital pins (without the RESET pin) to the target. It will send as many negative pulses as there are pins. 
-3. The target sketch puts all GPIOs into INPUT_PULLUP mode, which means all inputs of the host go HIGH.
+2. The target will report the number of digital pins (without the RESET pin) to the target. It will send as many negative pulses as there are pins. After waiting 20 msec, it will send the number of LED_BUILTIN (+1).
+3. The target sketch puts all GPIOs into INPUT_PULLUP mode, which means all inputs of the host go HIGH. Except for LED_BUILTIN, it uses OUTPUT.
 4. The target checks whether some pins are LOW, meaning that there is a shortage. If so, it will terminate by switching all pins to INPUT, at which point the host will terminate with failure.
 5. The target switches all lines to HIGH.
 6. Then it will switch one pin after the other to LOW, starting at pin 0.
 7. After all pins are LOW (for 100 ms), the target switches all pins to INPUT.
-8. Now the host switches all pins to INPUT_PULLUP 
+8. Now the host switches all pins to INPUT_PULLUP (but LED_BUILTIN will use OUTPUT).
 9. And waits for them to become HIGH.
 10. Then the host switches pin after pin to LOW.
-11. After 100 ms the host switches all pins again to input. 
-12. If the target switches the pin with the highest number to HIGH, everything is good; otherwise, something failed.
+11. After 100 ms the host switches all pins again to INPUT. 
+12. If the target switches the pin with the lowest number to HIGH, everything is good; otherwise, something failed.

@@ -1,5 +1,5 @@
 #define WAIT 100
-#define TIMEOUT_MS 90000
+#define TIMEOUT_MS 60000
 #define PULSE_MS 5
 #define COMPIN 0
 
@@ -10,8 +10,13 @@ const iopins = 23;
 #else
 const int iopins = NUM_DIGITAL_PINS - 1; 
 #endif
+#if defined(LED_BUILTIN)
+const int led_builtin = LED_BUILTIN;
+#else
+const int led_builtin = iopins;
+#endif
 int phase, subphase;
-int reset_pin = -1;
+
 
 void setup()
 {
@@ -35,13 +40,21 @@ void loop()
     phase = 2;
     break;
   case 2:
-    send_pulses();
-    delay(20);
+    send_pulses(iopins);
+    delay(30);
+    send_pulses(led_builtin+1);
     phase = 3;
     start = millis();
     break;
   case 3:
-    for (i = 0; i < iopins; i++) pinMode(i, INPUT_PULLUP);
+    for (i = 0; i < iopins; i++) {
+      if (i == led_builtin) {
+        digitalWrite(i, HIGH);
+        pinMode(i, OUTPUT);
+      } else {
+        pinMode(i, INPUT_PULLUP);
+      }
+    }
     delay(100);
     phase = 4;
     start = millis();
@@ -72,8 +85,14 @@ void loop()
     break;
   case 7:
     for (i = 0; i < iopins; i++) pinMode(i, INPUT);
-    phase = 10;
+    phase = 9;
     subphase = 0;
+    start = millis();
+    break;
+  case 9: /* wait for all pins to come high */
+    for (i = 0; i < iopins; i++)
+      if (digitalRead(i) == LOW) return;
+    phase = 10;
     start = millis();
     break;
   case 10: /* Now wait for switching to LOW one by one */
@@ -105,9 +124,9 @@ void report_failure()
   while (1);
 }
 
-void send_pulses()
+void send_pulses(int num)
 {
-  for (int i = 0; i < iopins; i++) {
+  for (int i = 0; i < num; i++) {
     digitalWrite(COMPIN, LOW);
     pinMode(COMPIN, OUTPUT);
     delay(5);

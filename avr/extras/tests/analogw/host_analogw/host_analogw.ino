@@ -10,7 +10,7 @@
 unsigned long start;
 int phase, pwm;
 int iocount;
-
+bool succ = true;
 
 
 void setup()
@@ -25,6 +25,7 @@ void setup()
 
 void loop()
 {
+  bool lsucc = true;
   int i;
   if (millis() - start > TIMEOUT_MS) 
     report_failure();
@@ -52,8 +53,11 @@ void loop()
       return;
     pwm = count_pulses() - 1; // number is one to high to allow for pin 
     pinMode(COMPIN, INPUT); 
-    if (pwm == iocount) { // we are ready
-      report_success();
+    if (pwm >= iocount) { // we are ready
+      if (succ)
+        report_success();
+      else
+        report_failure();
     }
     Serial.print(F("PWM pin to test: "));
     Serial.println(pwm);
@@ -63,12 +67,14 @@ void loop()
     break;
   case 4:
     pinMode(HPIN(pwm), INPUT);
-    if (!waitfor(pwm, 10)) report_failure();
-    if (!waitfor(pwm, 50)) report_failure();
-    if (!waitfor(pwm, 90)) report_failure();
-    if (!waitfor(pwm,100)) report_failure();
+    if (!waitfor(pwm, 10)) lsucc = false;
+    if (!waitfor(pwm, 50)) lsucc = false;
+    if (!waitfor(pwm, 90)) lsucc = false;
+    if (!waitfor(pwm,100)) lsucc = false;
     delay(20);
-    Serial.println("PWM check OK");
+    if (lsucc) Serial.println("PWM check OK");
+    else Serial.println(F("PWM check failed"));
+    if (!lsucc) succ = false;
     start = millis();
     phase = 3;
     break;
