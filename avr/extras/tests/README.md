@@ -6,6 +6,11 @@ The tests in this folder each check one particular basic functionality. They are
 - `analogw`: Tests `analogWrite` on all supported pins, one by one, trying out different values.
 - `analogr`: Tests `analogRead` on all supported pins, one by one, trying 0V and Vcc.
 - `analogv`: Tests `analogRead` on all supported pins in parallel, printing the measured voltage. 
+- `serial`: Tests serial I/O.
+- `wire`: Tests to check I2C master and slave capabilities.
+- `spi`: Tests to check SPI master and slave capabilities.
+- `neo`: Tests to check the neopixel functionality.
+- `servo`: Tests to check servo functionality.
 
 
 
@@ -13,12 +18,12 @@ The tests in this folder each check one particular basic functionality. They are
 | ------------------------------------------- | -------- | -------- | --------- | --------- | -------- | -------- | ---------- | ---------- | --------- | -------- | -------- |
 | `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
 | `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🔴        |
-| `Serial.print()` and `Serial.read()`        | ⚪️        | ⚪️        | ⚪️         | 🟢         | 🟡        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
+| `Serial.print()` and `Serial.read()`        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟡        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
 | `analogRead()`on all supported pins         | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | ⚪️        | ⚫️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
 | SPI master                                  | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
 | SPI slave                                   | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Wire master                                 | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Wire slave                                  | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
+| Wire master                                 | 🟢        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
+| Wire slave                                  | 🟢        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
 | Neopixel library/libraries                  | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
 | Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
 
@@ -28,11 +33,10 @@ The tests in this folder each check one particular basic functionality. They are
 ⚫️ = Not present
 ⚪️ = Untested
 
-ATtiny26: 
+ATtiny26:
 
 - analogWrite: PWM does not work on either PWM pin (9 and 11)
-- Serial I/O does not compile: ser.ino:19: undefined reference to `\__SP_H__'
 
 ATtinyX7:
 
-- TX works, RX does not
+- Serial: TX works, RX does not
