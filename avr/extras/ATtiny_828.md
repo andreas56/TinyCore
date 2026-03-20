@@ -1,5 +1,9 @@
-# ATtiny828(R)
-![828 Pin Mapping](Pinout_828.png "Arduino Pin Mapping for ATtiny828")
+# ATtiny828/R
+
+| Pinout diagram                        | Minimal setup schematic                             |
+|---------------------------------------|-----------------------------------------------------|
+|<img src="Pinout_828.png" width="180"> | <img src="ATtiny828_minimal_setup.png" width="300"> |
+
 
 | Specification                    | ATtiny828            |
 |----------------------------------|----------------------|
@@ -15,6 +19,7 @@
 | External Crystal                 | Not supported        |
 | External Clock                   | All standard         |
 | Int. WDT Oscillator              | Not supported        |
+| LED_BUILTIN                      | PIN_PB0              |
 
 ### Urboot bootloader
 This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny2313/4313, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792 or 3840 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.

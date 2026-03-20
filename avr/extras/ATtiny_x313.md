@@ -1,5 +1,9 @@
-# ATtiny 2313/4313
-![x313 pin mapping](Pinout_x313.png "Arduino Pin Mapping for ATtiny x313-family")
+# ATtiny2313/2313A/4313
+
+| Pinout diagram                         | Minimal setup schematic                                   |
+|----------------------------------------|-----------------------------------------------------------|
+|<img src="Pinout_x313.png" width="250"> | <img src="ATtiny2313_4313_minimal_setup.png" width="260"> |
+
 
 | Specification                    | ATtiny4313         | ATtiny2313/A       |
 |----------------------------------|--------------------|--------------------|

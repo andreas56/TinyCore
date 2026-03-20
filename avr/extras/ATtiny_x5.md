@@ -1,5 +1,9 @@
-# ATtiny 25/45/85
-![x5 pin mapping](Pinout_x5.png "Arduino Pin Mapping for ATtiny x5-family")
+# ATtiny25/45/85
+
+| Pinout diagram                        | Minimal setup schematic                                  |
+|---------------------------------------|----------------------------------------------------------|
+|<img src="Pinout_x5.png" width="360">  | <img src="ATtiny25_45_85_minimal_setup.png" width="240"> |
+
 
 | Specification                    | ATtiny85         | ATtiny45         | ATtiny25         |
 |----------------------------------|------------------|------------------|------------------|

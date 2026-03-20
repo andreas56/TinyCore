@@ -1,5 +1,9 @@
-# ATtiny 24/44/84(a)
-![x4 pin mapping](Pinout_x4.png "Arduino Pin Mapping for ATtiny x4-family")
+# ATtiny24/44/84
+
+| Pinout diagram                        | Minimal setup schematic                                  |
+|---------------------------------------|----------------------------------------------------------|
+|<img src="Pinout_x4.png" width="340">  | <img src="ATtiny24_44_84_minimal_setup.png" width="260"> |
+
 
 | Specification                    | ATtiny84         | ATtiny44         | ATtiny24         |
 |----------------------------------|------------------|------------------|------------------|

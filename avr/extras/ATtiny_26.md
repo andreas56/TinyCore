@@ -1,5 +1,9 @@
 # ATtiny 26
-![tiny26 pin mapping](Pinout_26.png "Arduino Pin Mapping for ATtiny 26")
+
+| Pinout diagram                       | Minimal setup schematic                            |
+|--------------------------------------|----------------------------------------------------|
+|<img src="Pinout_26.png" width="350"> | <img src="ATtiny26_minimal_setup.png" width="250"> |
+
 
 | Specification                    | ATtiny26                |
 |----------------------------------|-------------------------|

@@ -1,5 +1,9 @@
 # ATtiny43U
-![43 pin mapping](Pinout_43.png "Arduino Pin Mapping for ATtiny 43")
+
+| Pinout diagram                       | Minimal setup schematic                             |
+|--------------------------------------|-----------------------------------------------------|
+|<img src="Pinout_43.png" width="350"> | <img src="ATtiny43U_minimal_setup.png" width="250"> |
+
 
 | Specification                    | ATtiny43U          |
 |----------------------------------|--------------------|

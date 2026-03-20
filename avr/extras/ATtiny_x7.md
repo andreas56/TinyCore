@@ -1,5 +1,9 @@
-# ATtiny 87/167
-![x7 pin mapping](Pinout_x7.png "Arduino Pin Mapping for ATtiny x7-family")
+# ATtiny87/167
+
+| Pinout diagram                        | Minimal setup schematic                                |
+|---------------------------------------|--------------------------------------------------------|
+|<img src="Pinout_x7.png" width="360">  | <img src="ATtiny87_167_minimal_setup.png" width="240"> |
+
 
 | Specification                    | ATtiny167          | ATtiny87           |
 |----------------------------------|--------------------|--------------------|

@@ -1,4 +1,4 @@
-# ATtiny 441/841
+# ATtiny441/841
 ![x41 Pin Mapping](Pinout_x41.png "Arduino Pin Mapping for ATtiny x41")
 
 | Specification                    | ATtiny841                | ATtiny441                |

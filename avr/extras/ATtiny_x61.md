@@ -1,5 +1,9 @@
-# ATtiny 261/461/861(a)
-![x61 pin mapping](Pinout_x61.png "Arduino Pin Mapping for ATtiny x61-family")
+# ATtiny261/461/861/A
+
+| Pinout diagram                         | Minimal setup schematic                                     |
+|----------------------------------------|-------------------------------------------------------------|
+|<img src="Pinout_x61.png" width="370">  | <img src="ATtiny261_461_861_minimal_setup.png" width="230"> |
+
 
 | Specification                    | ATtiny861               | ATtiny461               | ATtiny261               |
 |----------------------------------|-------------------------|-------------------------|-------------------------|

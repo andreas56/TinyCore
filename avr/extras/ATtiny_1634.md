@@ -1,5 +1,9 @@
-# ATtiny1634
-![#1634 Pin Mapping](Pinout_1634.png "Arduino Pin Mapping for ATtiny 1634")
+# ATtiny1634/R
+
+| Pinout diagram                         | Minimal setup schematic                              |
+|----------------------------------------|------------------------------------------------------|
+|<img src="Pinout_1634.png" width="310"> | <img src="ATtiny1634_minimal_setup.png" width="290"> |
+
 
 | Specification                    | ATtiny1634             |
 |----------------------------------|------------------------|
