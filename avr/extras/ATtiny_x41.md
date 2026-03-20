@@ -1,5 +1,9 @@
 # ATtiny441/841
-![x41 Pin Mapping](Pinout_x41.png "Arduino Pin Mapping for ATtiny x41")
+
+| Pinout diagram                        | Minimal setup schematic                                 |
+|---------------------------------------|---------------------------------------------------------|
+|<img src="Pinout_x41.png" width="320"> | <img src="ATtiny441_841_minimal_setup.png" width="240"> |
+
 
 | Specification                    | ATtiny841                | ATtiny441                |
 |----------------------------------|--------------------------|--------------------------|
