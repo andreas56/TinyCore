@@ -30,7 +30,7 @@ TinyCore is a fork of the [ATTinyCore 2.0.0 branch](https://github.com/SpenceKon
 * [SPI, i2c and UART](#spi-i2c-and-uart)
 * [ADC](#adc)
 * [Neopixel library](#neopixel-library)
-* [Pin mappings](#pin-mappings)
+* [Pin mappings and minimal setup schematics](#pin-mappings-and-minimal-setup-schematics)
 
 
 ## Supported microcontrollers
@@ -390,38 +390,80 @@ The libraries have not been fully tested at unusual clock speeds, but they are c
 See the tinyNeoPixel documentation and the included examples for additional details.
 
 
-## Pin mappings
-
-### ATtiny441/841
-![x41 pin mapping](avr/extras/Pinout_x41.png "Arduino Pin Mapping for ATtiny841/441")
-
-### ATtiny1634
-![1634 pin mapping](avr/extras/Pinout_1634.png "Arduino Pin Mapping for ATtiny1634")
-
-### ATtiny828
-![828 Pin Mapping](avr/extras/Pinout_828.png "Arduino Pin Mapping for ATtiny828")
+## Pin mappings and minimal setup schematics
 
 ### ATtiny25/45/85
-![x5 pin mapping](avr/extras/Pinout_x5.png "Arduino Pin Mapping for ATtiny85/45/25")
+
+| Pinout diagram                                  | Minimal setup schematic                                  |
+|-------------------------------------------------|----------------------------------------------------------|
+|<img src="avr/extras/Pinout_x5.png" width="360"> | <img src="avr/extras/ATtiny25_45_85_minimal_setup.png" width="240"> |
+
 
 ### ATtiny24/44/84
-![x4 Pin Mapping](avr/extras/Pinout_x4.png "Arduino Pin Mapping for ATtiny84/44/24")
+
+| Pinout diagram                                  | Minimal setup schematic                                  |
+|-------------------------------------------------|----------------------------------------------------------|
+|<img src="avr/extras/Pinout_x4.png" width="340"> | <img src="avr/extras/ATtiny24_44_84_minimal_setup.png" width="260"> |
+
+
+### ATtiny441/841
+
+| Pinout diagram                                   | Minimal setup schematic                                 |
+|--------------------------------------------------|---------------------------------------------------------|
+|<img src="avr/extras/Pinout_x41.png" width="320"> | <img src="avr/extras/ATtiny441_841_minimal_setup.png" width="240"> |
+
 
 ### ATtiny261/461/861
-![x61 Pin Mapping](avr/extras/Pinout_x61.png "Arduino Pin Mapping for ATtiny861/461/261")
+
+| Pinout diagram                                   | Minimal setup schematic                                     |
+|--------------------------------------------------|-------------------------------------------------------------|
+|<img src="avr/extras/Pinout_x61.png" width="370"> | <img src="avr/extras/ATtiny261_461_861_minimal_setup.png" width="230"> |
+
 
 ### ATtiny87/167
-![x7 Pin Mapping](avr/extras/Pinout_x7.png "Arduino Pin Mapping for ATtiny167/87")
+
+| Pinout diagram                                  | Minimal setup schematic                                |
+|-------------------------------------------------|--------------------------------------------------------|
+|<img src="avr/extras/Pinout_x7.png" width="360"> | <img src="avr/extras/ATtiny87_167_minimal_setup.png" width="240"> |
+
 
 ### ATtiny48/88
-![x8 SMD Pin Mapping](avr/extras/Pinout_x8.png "Arduino Pin Mapping for ATtiny88/48 in TQFP")
-![x8 DIP Pin Mapping](avr/extras/Pinout_x8_PU.png "Arduino Pin Mapping for ATtiny88/48 in DIP")
+
+| Pinout diagram DIP-28                              | Pinout diagram TQFP-32                                           | Minimal setup schematic                                          |
+|----------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------|
+|<img src="avr/extras/Pinout_x8_PU.png" width="250"> |<center><img src="avr/extras/Pinout_x8.png" width="120"></center> | <img src="avr/extras/ATtiny48_88_minimal_setup.png" width="220"> |
+
 
 ### ATtiny2313/4313
-![x313 Pin Mapping](avr/extras/Pinout_x313.png "Arduino Pin Mapping for ATtiny4313/2313")
+
+| Pinout diagram                                    | Minimal setup schematic                                              |
+|---------------------------------------------------|----------------------------------------------------------------------|
+|<img src="avr/extras/Pinout_x313.png" width="250"> | <img src="avr/extras/ATtiny2313_4313_minimal_setup.png" width="260"> |
+
+
+### ATtiny1634
+
+| Pinout diagram                                    | Minimal setup schematic                                         |
+|---------------------------------------------------|-----------------------------------------------------------------|
+|<img src="avr/extras/Pinout_1634.png" width="310"> | <img src="avr/extras/ATtiny1634_minimal_setup.png" width="290"> |
+
+
+### ATtiny828
+
+| Pinout diagram                                   | Minimal setup schematic                                        |
+|--------------------------------------------------|----------------------------------------------------------------|
+|<img src="avr/extras/Pinout_828.png" width="180"> | <img src="avr/extras/ATtiny828_minimal_setup.png" width="300"> |
+
 
 ### ATtiny43U
-![ATtiny43U pin mapping](avr/extras/Pinout_43.png "Arduino Pin Mapping for ATtiny43")
+
+| Pinout diagram                                  | Minimal setup schematic                                        |
+|-------------------------------------------------|----------------------------------------------------------------|
+|<img src="avr/extras/Pinout_43.png" width="350"> | <img src="avr/extras/ATtiny43U_minimal_setup.png" width="250"> |
+
 
 ### ATtiny26
-![ATtiny26 pin mapping](avr/extras/Pinout_26.png "Arduino Pin Mapping for ATtiny26")
+
+| Pinout diagram                                  | Minimal setup schematic                                       |
+|-------------------------------------------------|---------------------------------------------------------------|
+|<img src="avr/extras/Pinout_26.png" width="350"> | <img src="avr/extras/ATtiny26_minimal_setup.png" width="250"> |
