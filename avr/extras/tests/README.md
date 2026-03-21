@@ -1,6 +1,6 @@
 # Minimum functionality tests
 
-The tests in this folder each check one particular basic functionality. They are organized in folders, where each folder contains at least a target sketch, which needs to be flashed to the target chip, and perhaps a host sketch for an ATmega328P (Uno, Mega, or Nano). Further, there will be a generic description of how to wire up the two sketches and how to run the test protocol. 
+The tests in this folder each check one particular basic functionality. They are organized in folders, where each folder contains at least a target sketch, which needs to be flashed to the target chip, and perhaps a host sketch for an ATmega328P (Uno, Mega, or Nano). Further, there will be a generic description of how to wire up the two boards and how to run the test protocol. 
 
 - `digitalrw`: Tests `digitalRead` and `digitalWrite` on all pins
 - `analogw`: Tests `analogWrite` on all supported pins, one by one, trying out different values.
@@ -18,10 +18,10 @@ The tests in this folder each check one particular basic functionality. They are
 | ------------------------------------------- | -------- | -------- | --------- | --------- | -------- | -------- | ---------- | ---------- | --------- | -------- | -------- |
 | `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
 | `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🔴        |
-| `Serial.print()` and `Serial.read()`        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟡        | 🟢        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
+| `Serial.print()` and `Serial.read()`        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
 | `analogRead()`on all supported pins         | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚫️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
 | SPI master                                  | 🔴        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| SPI slave                                   | 🔴        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
+| SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | ⚪️        | 🟢        | ⚫️          | ⚫️          | ⚪️         | ⚫️        | ⚫️        |
 | Wire master                                 | 🟢        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
 | Wire slave                                  | 🟢        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
 | Neopixel library/libraries                  | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
