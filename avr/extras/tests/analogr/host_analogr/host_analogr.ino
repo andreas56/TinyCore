@@ -83,7 +83,7 @@ void loop()
 
 void report_success()
 {
-  Serial.println(F("Analog write test successfully completed!"));
+  Serial.println(F("Analog read test successfully completed!"));
   bool on = false;
   for (int i = 0; i < iocount; i++) pinMode(HPIN(i), INPUT);
   pinMode(LED_BUILTIN, OUTPUT);

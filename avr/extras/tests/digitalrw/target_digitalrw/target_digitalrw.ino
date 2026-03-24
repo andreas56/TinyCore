@@ -4,9 +4,13 @@
 #define COMPIN 0
 
 unsigned long start;
-// number of digital pins without the RESET pin, for ATtinyx8 only the one for the DIP footprint
+// number of digital pins without the RESET pin (usually the pin with the highest number),
+// for ATtinyx8 only the one for the DIP footprint
+// for ATtiny828 only those before the RESET pin
 #if defined(__AVR_ATtiny48__) || defined(__AVR_ATtiny88__)
-const iopins = 23;
+const int iopins = 23;
+#elif defined(__AVR_ATtiny828__)
+const int iopins = 26;
 #else
 const int iopins = NUM_DIGITAL_PINS - 1; 
 #endif
@@ -24,6 +28,7 @@ void setup()
   phase = 1;
   start = millis();
 }
+
 
 void loop()
 {
