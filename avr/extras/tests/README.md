@@ -16,12 +16,12 @@ The tests in this folder each check one particular basic functionality. They are
 
 | Tests                                       | ATtinyX5 | ATtinyX4 | ATtinyX41 | ATtinyX61 | ATtinyX7 | ATtinyX8 | ATtinyX313 | ATtiny1634 | ATtiny828 | ATtiny43 | ATtiny26 |
 | ------------------------------------------- | -------- | -------- | --------- | --------- | -------- | -------- | ---------- | ---------- | --------- | -------- | -------- |
-| `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
-| `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🟢        | 🔴        |
+| `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🟢        |
+| `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🔴        |
 | `Serial.print()` and `Serial.read()`        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🟢        |
 | `analogRead()`on all supported pins         | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚫️          | ⚪️          | 🟢         | 🟢        | 🟢        |
 | SPI master                                  | 🔴        | ⚪️        | ⚪️         | 🔴         | 🔴        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🔴        | 🔴        |
-| SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | 🔴         | ⚫️        | ⚫️        |
+| SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | 🟢         | ⚫️        | ⚫️        |
 | Wire master                                 | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🟢        | 🔴        |
 | Wire slave                                  | 🟢        | ⚪️        | ⚪️         | 🟢         | 🔴        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🔴        | 🔴        |
 | Neopixel library/libraries                  | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🔴        |
@@ -51,7 +51,7 @@ ATtiny167:
 
 ATtiny861:
 
-- SPI master: Message is not received by slave 
+- SPI master: Message is not received by the slave 
 
 ATtiny43U:
 
@@ -61,7 +61,9 @@ ATtiny43U:
 
 ATtiny828:
 
-- <s>Neopixel does not work on: 6,7,8,9,11, ...? Does not work on 1.5.2 either on pin 11, even if I set Neopixel port to PORTB</s>  *was the board hardware* 
-- Wire Master & Salve use apparently my bitbang I2C lib SoftI2CMaster and fail with a compilation error
-- <s>Reading analog values: Wildly wrong and huge differences. Even when measuring individually, the values are way off (with the 1.5.2 core, it is the same; maybe it is a problem with the sample?)  </s> *Was probably the board!*
-- analogWrite: Does not work at all. Under the 1.5.2 core it works for pins 20-22 (but not for 16). This still holds for the new hardware setup.
+- **Note**: When PD3 (D27) is used as an input (also for TWI/SPI slave clock), WDT has to be activated!
+
+- <s>Neopixel does not work on: 6,7,8,9,11, ...? Does not work on 1.5.2 either on pin 11, even if I set Neopixel port to PORTB</s>.  *It was the board hardware*!
+- Wire Master & Slave fail with a compilation error (pins need to be defined in pins_arduino.h)
+- <s>Reading analog values: Wildly wrong and huge differences. Even when measuring individually, the values are way off (with the 1.5.2 core, it is the same; maybe it is a problem with the sample?)  </s> *Was probably the board hardware as well*
+- analogWrite: Does not work at all. This still holds for the new hardware setup. Under the 1.5.2 core it works for pins 20-22 (but not for 16). 

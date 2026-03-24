@@ -4,6 +4,18 @@
 volatile byte indx;
 volatile boolean done;
 
+#ifdef __AVR_ATtiny828__
+#include <avr/wdt.h>
+// The ATtiny828 SPI slave works only if WDT is active
+// wdt is disabled initially in order to avoid wdt loops!
+void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3"))) __attribute__((used));
+void wdt_init(void)
+{
+  MCUSR = 0;
+  wdt_disable();
+}
+#endif
+
 const int len = 12;
 char recv[12] = "hello slave";
 char send[12] = "hi master";
@@ -11,6 +23,9 @@ char buf[12];
 bool success = false;
 
 void setup (void) {
+#ifdef __AVR_ATtiny828__
+   wdt_enable(WDTO_8S);
+#endif
    Serial.begin (9600);
    Serial.println(F("\n\r\n\rSPI Slave test sketch"));
    pinMode(MISO, OUTPUT); // have to send on master in so it set as output

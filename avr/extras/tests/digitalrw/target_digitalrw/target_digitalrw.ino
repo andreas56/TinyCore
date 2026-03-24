@@ -6,8 +6,11 @@
 unsigned long start;
 // number of digital pins without the RESET pin (usually the pin with the highest number),
 // for ATtinyx8 only the one for the DIP footprint
+// for ATtiny828 only those before the RESET pin
 #if defined(__AVR_ATtiny48__) || defined(__AVR_ATtiny88__)
 const int iopins = 23;
+#elif defined(__AVR_ATtiny828__)
+const int iopins = 26;
 #else
 const int iopins = NUM_DIGITAL_PINS - 1; 
 #endif
@@ -26,15 +29,6 @@ void setup()
   start = millis();
 }
 
-int realpin(int pin)
-{
-  // 828 is the only ATtiny that has one pin with a HIGHER number than the RESET pin
-#ifdef __AVR_ATtiny828__ 
-  return ((pin == iopins-1) ? iopins : pin); 
-#else
-  return(pin);
-#endif
-}
 
 void loop()
 {
@@ -60,10 +54,10 @@ void loop()
   case 3:
     for (i = 0; i < iopins; i++) {
       if (i == led_builtin) {
-        digitalWrite(realpin(i), HIGH);
-        pinMode(realpin(i), OUTPUT);
+        digitalWrite(i, HIGH);
+        pinMode(i, OUTPUT);
       } else {
-        pinMode(realpin(i), INPUT_PULLUP);
+        pinMode(i, INPUT_PULLUP);
       }
     }
     delay(100);
@@ -72,22 +66,22 @@ void loop()
     break;
   case 4:
     for (i = 0; i < iopins; i++)
-      if (digitalRead(realpin(i)) == LOW)
+      if (digitalRead(i) == LOW)
         report_failure();
     phase = 5;
     start = millis();
     break;
   case 5:
     for (i = 0; i < iopins; i++) {
-      digitalWrite(realpin(i), HIGH);
-      pinMode(realpin(i), OUTPUT);
+      digitalWrite(i, HIGH);
+      pinMode(i, OUTPUT);
     }
     phase = 6;
     start = millis();
     break;
   case 6:
     for (i = 0; i < iopins; i++) {
-      digitalWrite(realpin(i), LOW);
+      digitalWrite(i, LOW);
       delay(200);
     }
     delay(100);
@@ -95,22 +89,22 @@ void loop()
     start = millis();
     break;
   case 7:
-    for (i = 0; i < iopins; i++) pinMode(realpin(i), INPUT);
+    for (i = 0; i < iopins; i++) pinMode(i, INPUT);
     phase = 9;
     subphase = 0;
     start = millis();
     break;
   case 9: /* wait for all pins to come high */
     for (i = 0; i < iopins; i++)
-      if (digitalRead(realpin(i)) == LOW) return;
+      if (digitalRead(i) == LOW) return;
     phase = 10;
     start = millis();
     break;
   case 10: /* Now wait for switching to LOW one by one */
     for (i = 0; i <= subphase; i++) 
-      if (digitalRead(realpin(i)) == HIGH) return;
+      if (digitalRead(i) == HIGH) return;
     for (i = subphase+1; i < iopins; i++)
-      if (digitalRead(realpin(i)) == LOW) return;
+      if (digitalRead(i) == LOW) return;
     subphase++;
     if (subphase >= iopins) {
       subphase = -1;
@@ -131,7 +125,7 @@ void loop()
 
 void report_failure()
 {
-  for (int i = 0; i < iopins; i++) pinMode(realpin(i), INPUT);
+  for (int i = 0; i < iopins; i++) pinMode(i, INPUT);
   while (1);
 }
 
