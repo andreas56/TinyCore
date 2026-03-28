@@ -205,14 +205,14 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   TOCC mask = TOCCn & 0xF0 >> (TOCCn & 0x08)?4:0
 */
 #if defined(TOCPMCOE)
-  #define TOCC0  (0x10)
-  #define TOCC1  (0x20)
-  #define TOCC2  (0x40)
-  #define TOCC3  (0x80)
-  #define TOCC4  (0x18)
-  #define TOCC5  (0x28)
-  #define TOCC6  (0x48)
-  #define TOCC7  (0x88)
+  #define TOCC0  (0x00)
+  #define TOCC1  (0x10)
+  #define TOCC2  (0x20)
+  #define TOCC3  (0x30)
+  #define TOCC4  (0x40)
+  #define TOCC5  (0x50)
+  #define TOCC6  (0x60)
+  #define TOCC7  (0x70)
 #endif
 
 /*  Timer1 on the ATtiny167/ATtiny87 can output an

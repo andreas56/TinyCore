@@ -1,5 +1,6 @@
 #include <avr/interrupt.h>
 #include "wiring_private.h"
+#include "init_timer0.h"
 
 
 #define MILLIS_ENABLED
@@ -41,17 +42,7 @@ void init_millis(void) __attribute__ ((naked)) __attribute__ ((used)) __attribut
 void init_millis() {
   /* Initialize Primary Timer */
   #if (TIMER_TO_USE_FOR_MILLIS == 0)
-    #if defined(WGM01) // if Timer0 has PWM
-      TCCR0A = (1 << WGM01) | (1 << WGM00);
-    #endif
-    #if defined(TCCR0B) //The x61 has a wacky Timer0!
-      TCCR0B = (MillisTimer_Prescale_Index << CS00);
-
-    #elif defined(TCCR0A)  // Tiny x8 has no PWM from timer0
-      TCCR0A = (MillisTimer_Prescale_Index << CS00);
-    #else // tiny26 has no TCCR0A at all, only TCCR0
-      TCCR0 = (MillisTimer_Prescale_Index << CS00);
-    #endif
+    init_timer0();
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1) //ATtiny x5
     TCCR1 = (1 << CTC1) | (1 << PWM1A) | (MillisTimer_Prescale_Index << CS10);
     GTCCR = (1 << PWM1B);
