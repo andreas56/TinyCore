@@ -21,7 +21,9 @@
 | External Clock(up to 16 MHz)     | All standard           |
 | LED_BUILTIN                      | PIN_PC0                |
 
+
 ## Table of contents
+- [Overview](#overview)
 - [Urboot bootloader](#urboot-bootloader)
 - [Internal oscillator calibration](#internal-oscillator-calibration)
 - [Features](#features)
@@ -34,8 +36,12 @@
   - [ADC Reference options](#adc-reference-options)
   - [Workaround for PD3 Input Errata](#workaround-for-pd3-input-errata)
 
+
+### Overview
+The ATtiny1634 is one of the larger classic tinyAVR devices, offering 16 KiB of flash, 18 GPIO pins (incl. RST), two hardware UARTs, and a USI peripheral for I2C and SPI. It is well suited to applications that require multiple serial interfaces without stepping up to a full ATmega. The chip is available in 20-pin SOIC and QFN packages. Officially it does not support an external crystal above 12 MHz, and its internal oscillator may require calibration for reliable UART communication. Note that the ATtiny1634R has a more accurate internal oscillator.
+
 ### Urboot bootloader
-This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny441/841, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 3840 or 7936 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
+This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny1634, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 16128 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. This chip has two hardware serial port, so Urboot can be configured to use either.
 
 A critical improvement over Optiboot is that Urboot actively protects both itself and the reset vector from being overwritten during flash operations, preventing the bootloader from bricking itself. The bootloader remains intact regardless of what is uploaded, making it a reliable choice.
 

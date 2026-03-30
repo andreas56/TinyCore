@@ -24,6 +24,7 @@
 | LED_BUILTIN                      | PIN_PB2          | PIN_PB2          | PIN_PB2          |
 
 ## Table of contents
+- [Overview](#overview)
 - [Urboot bootloader](#urboot-bootloader)
 - [Internal oscillator calibration](#internal-oscillator-calibration)
 - [Features](#features)
@@ -41,6 +42,9 @@
   - [ADC differential pair matrix](#adc-differential-pair-matrix)
   - [Temperature measurement](#temperature-measurement)
 
+
+### Overview
+The ATtiny24/44/84 family is one of the most widely used classic tinyAVR series. Available in a 14-pin DIP, SOIC-14 and QFN-20 packages. These parts offer a USI peripheral for I2C and SPI, a differential ADC with selectable 1x and 20x gain, and four PWM channels. The three family members differ only in flash and RAM size: 2/4/8 KB of flash and 128/256/512 bytes of RAM respectively. They do not feature a hardware UART; serial communication relies on the built-in software serial implementation.
 
 ### Urboot bootloader
 This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny24/44/84, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792, 3840, or 7936 bytes available for user code on the ATtiny24, 44, and 84 respectively. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.

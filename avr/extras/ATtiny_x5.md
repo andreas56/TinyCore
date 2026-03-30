@@ -24,6 +24,7 @@
 | LED_BUILTIN                      | PIN_PB2          | PIN_PB2          | PIN_PB2          |
 
 ## Table of contents
+- [Overview](#overview)
 - [Urboot bootloader](#urboot-bootloader)
 - [LED_BUILTIN is on PB2](#led_builtin-is-on-pb2)
 - [Internal oscillator calibration](#internal-oscillator-calibration)
@@ -44,6 +45,9 @@
   - [Differential channels](#differential-channels)
   - [Temperature measurement](#temperature-measurement)
 
+
+### Overview
+The ATtiny25/45/85 family is arguably the most popular classic tinyAVR series, widely used in small and space-constrained designs. Available in an 8-pin DIP, SOIC-8 and QFN-20 packages, these parts pack a USI peripheral, a differential ADC, an on-chip PLL, and a high-speed Timer1 into a minimal footprint. The three family members differ only in flash and RAM size: 2/4/8 KiB of flash and 128/256/512 bytes of RAM respectively. They do not feature a hardware UART; serial communication relies on the built-in software serial implementation.
 
 ### Urboot bootloader
 This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny25/45/85, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792, 3840, or 7936 bytes available for user code on the ATtiny25, 45, and 85 respectively. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.

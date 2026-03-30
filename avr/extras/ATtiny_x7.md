@@ -24,6 +24,7 @@
 
 
 ## Table of contents
+- [Overview](#overview)
 - [Urboot bootloader](#urboot-bootloader)
 - [Internal oscillator calibration](#internal-oscillator-calibration)
 - [Features](#features)
@@ -41,8 +42,11 @@
   - [Temperature measurement](#temperature-measurement)
 
 
+### Overview
+The ATtiny87/167 is distinguished within the classic tinyAVR lineup by its full hardware UART with LIN (Local Interconnect Network) support, making it a fit for automotive and industrial applications. It also features a hardware SPI peripheral and a USI for I2C, along with a flexible Timer1 capable of driving up to eight PWM pins simultaneously — though only two independent duty cycles are available across the PORTB pins. The ATtiny87 offers 8 KiB of flash and the ATtiny167 16 KiB; both share the same 512 bytes of RAM and EEPROM.
+
 ### Urboot bootloader
-This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny87/167, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 7936 or 16128 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
+This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny87/167, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 7936 or 16128 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips have a hardware serial port, UART0, so Urboot is configured to use this.
 
 A critical improvement over Optiboot is that Urboot actively protects both itself and the reset vector from being overwritten during flash operations, preventing the bootloader from bricking itself. The bootloader remains intact regardless of what is uploaded, making it a reliable choice.
 
