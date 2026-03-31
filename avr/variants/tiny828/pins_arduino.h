@@ -418,13 +418,13 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TOCC0 | TIMER0A,       /*  PC1 */
-  TOCC1 | NOT_ON_TIMER,  /*  PC2 */
-  TOCC2 | NOT_ON_TIMER,  /*  PC3 */
-  TOCC3 | NOT_ON_TIMER,  /*  PC4 */
-  TOCC4 | TIMER0B,       /*  PC5 */
-  TOCC5 | TIMER1A,       /*  PC6 */
-  TOCC6 | NOT_ON_TIMER,  /* CLKI */
+  TOCC0 | TIMER0A,       /*  PC0 */
+  TOCC1 | NOT_ON_TIMER,  /*  PC1 */
+  TOCC2 | NOT_ON_TIMER,  /*  PC2 */
+  TOCC3 | NOT_ON_TIMER,  /*  PC3 */
+  TOCC4 | TIMER0B,       /*  PC4 */
+  TOCC5 | TIMER1A,       /*  PC5 */
+  TOCC6 | NOT_ON_TIMER,  /*  PC6 */
   TOCC7 | TIMER1B,       /*  PC7 */
   NOT_ON_TIMER, /*  PD0 */
   NOT_ON_TIMER,

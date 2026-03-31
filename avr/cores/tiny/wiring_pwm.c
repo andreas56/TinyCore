@@ -10,10 +10,14 @@ void timer_pwm_setup() {
   init_timer1();
   #if defined(__AVR_ATtiny841__) || defined(__AVR_ATtiny441__)
     TOCPMSA0 = 0b00010000; // PA4: OC0A, PA3: OC1B, PA2: N/A,  PA1: N/A
+            // 0b0001xxxx
     TOCPMSA1 = 0b10100100; // PB2: OC2A, PA7: OC2B, PA6: OC1A, PA5: OC0B
+            // 0b10100100
   #elif defined(__AVR_ATtiny828__)
-    TOCPMSA0 = 0b11100100;  // PC3: OC1B, PC2: OC1A, PC1: OC0B, PC0 OC0A
-    TOCPMSA1 = 0b11001001;  // PC7: OC1B, PC6: OC0A, PC5: OC1A, PC4,OC0B
+    TOCPMSA0 = 0b00000000;  // PC3: N/A,  PC2: N/A,  PC1: N/A,  PC0 OC0A
+            // 0bxxxxxx00
+    TOCPMSA1 = 0b11001001;  // PC7: OC1B, PC6: N/A, PC5: OC1A, PC4,OC0B
+            // 0b11xx1001
   #endif
 }
 
@@ -30,7 +34,7 @@ void analogWrite(uint8_t pin, int val) {
   else {
     uint8_t timer = digitalPinToTimer(pin);
     #if defined(TOCPMCOE)
-      if (timer) {
+      if (timer & 0x0F) {
         uint8_t bitmask = timer & 0xF0;
         timer &= 0x07;
         switch (timer) {
@@ -45,25 +49,21 @@ void analogWrite(uint8_t pin, int val) {
             OCR1B = val;
             break;
           #if defined(TCCR2A)
-            // only test for these cases on x41
             case TIMER2A:
               OCR2A = val;
               break;
             case TIMER2B:
               OCR2B = val;
               break;
-            //end of x41-only
           #endif
           //case TIMER0B:
           default:
-            // if it's not 0, and it's not one of the other timers, it's gotta be TIMER0B.
             TCCR0A |= (1 << COM0B1);
             OCR0B = val;
             break;
         }
-        // In any event we can now switch OE for that pin.
         bitmask >>= 4;
-        TOCPMCOE |= (1 << bitmask);
+        TOCPMCOE |= (1 << bitmask); // Output enable
       } else // has to end with this, from if (timer)
     #else //Non-TOCPMCOE implementation
       // Timer0 has a output compare channel A (most parts)
