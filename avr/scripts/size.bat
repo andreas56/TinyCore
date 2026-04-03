@@ -1,68 +1,47 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM Argumente
-set sizeprog=%1
-set sketch=%2
-set maxflash=%3
-set maxram=%4
-set avrdude=%5
-set config=%6
-set mcu=%7
-set bootname=%8
+REM Arguments - strip surrounding quotes so paths with spaces work in sub-commands
+set "sizeprog=%~1"
+set "sketch=%~2"
+set "maxflash=%~3"
+set "maxram=%~4"
+set "avrdude=%~5"
+set "config=%~6"
+set "mcu=%~7"
+set "bootname=%~8"
 
-REM Bootloader-Größe bestimmen
+REM Determine bootloader size
 if "%bootname%"=="" (
     set boot=0
 ) else (
-    for /f "tokens=2" %%a in ('%avrdude% -c dryrun -p %mcu% -C %config% %bootname% -qq 2^>nul') do (
+    for /f "tokens=2" %%a in ('"%avrdude%" -c dryrun -p %mcu% -C "%config%" "%bootname%" -qq 2^>nul') do (
         set boot=%%a
     )
-    if not defined boot (
-        set boot=256
-    )
+    if not defined boot set boot=256
 )
-echo %boot%
 
-REM maxflash berechnen
+REM Calculate maxflash
 set /a maxflash=%maxflash% - %boot%
 
-REM Flash berechnen
+REM Calculate flash and RAM from avr-size output
 set flash=0
-for /f "tokens=1,2" %%a in ('%sizeprog% -A %sketch% ^| findstr /r "^\.text ^\.data"') do (
-    set /a flash+=%%b
-)
-
-REM RAM berechnen
 set ram=0
-for /f "tokens=1,2" %%a in ('%sizeprog% -A %sketch% ^| findstr /r "^\.data ^\.bss ^\.noinit"') do (
-    set /a ram+=%%b
+for /f "tokens=1,2" %%a in ('"%sizeprog%" -A "%sketch%"') do (
+    if "%%a"==".text"   set /a flash+=%%b
+    if "%%a"==".data"   set /a flash+=%%b
+    if "%%a"==".data"   set /a ram+=%%b
+    if "%%a"==".bss"    set /a ram+=%%b
+    if "%%a"==".noinit" set /a ram+=%%b
 )
 
-REM Prozent berechnen
+REM Calculate percentage
 set /a flashpercent=flash*100/maxflash
 
-REM Ausgabe starten
-<nul set /p="{
-  "output": "Flash memory used: %flash% bytes of out of %maxflash% (%flashpercent%%%).
-"
+REM Determine severity
+set severity=info
+if %ram% GTR %maxram% set severity=error
+if %flash% GTR %maxflash% set severity=error
 
-<nul set /p="RAM used for global variables: %ram% bytes out of %maxram%. %avrdude% %config% %mcu% %bootname%","
-
-REM Severity
-if %ram% GTR %maxram% (
-    set severity=error
-) else if %flash% GTR %maxflash% (
-    set severity=error
-) else (
-    set severity=info
-)
-
-<nul set /p=""severity": "%severity%","
-
-REM Sections
-echo "sections": [
-    { "name": "text", "size": %flash%, "max_size": %maxflash% },
-    { "name": "data", "size": %ram%, "max_size": %maxram% }
-  ]
-}
+REM Output JSON
+echo {"output": "Flash memory used: %flash% bytes out of %maxflash% (%flashpercent%%%). RAM used for global variables: %ram% bytes out of %maxram%.","severity": "%severity%","sections": [{"name": "text","size": %flash%,"max_size": %maxflash%},{"name": "data","size": %ram%,"max_size": %maxram%}]}
