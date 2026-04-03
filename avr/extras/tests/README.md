@@ -16,17 +16,17 @@ The tests in this folder each check one particular basic functionality. They are
 
 | Tests                                       | ATtinyX5 | ATtinyX4 | ATtinyX41 | ATtinyX61 | ATtinyX7 | ATtinyX8 | ATtinyX313 | ATtiny1634 | ATtiny828 | ATtiny43 | ATtiny26 |
 | ------------------------------------------- | -------- | -------- | --------- | --------- | -------- | -------- | ---------- | ---------- | --------- | -------- | -------- |
-| `digitalRead()`/`digitalWrite()`on all pins | 🟢       | 🟢       | 🟢        | 🟢         | 🟢       | 🟢       | 🟢         | 🟢         | 🟢         | 🟢       | 🟢       |
-| `analogWrite()`on all supported pins        | 🟢       | 🟢       | 🟢        | 🟢         | 🟢       | 🟢       | 🟢         | 🟢         | ⚪️         | 🟢       | ⚪️       |
-| `Serial.print()` and `Serial.read()`        | 🟢       | 🟢       | 🟢        | 🟢         | 🟢       | 🟢       | 🟢         | 🟢         | 🟢         | 🟢       | 🟢       |
-| `analogRead()`on all supported pins         | 🟢       | 🟢       | 🟢        | 🟢         | 🟢       | 🟢       | ⚫️         | 🟢         | 🟢         | 🟢       | 🟢       |
-| SPI master                                  | 🟢       | 🟢       | 🟢        | 🔴         | 🔴       | 🟢       | 🟢         | 🟢         | 🟢         | 🔴       | 🔴       |
-| SPI slave                                   | ⚫️       | ⚫️       | ⚪️        | ⚫️         | 🟢       | 🟢       | ⚫️         | ⚫️         | 🟢         | ⚫️       | ⚫️       |
-| Wire master                                 | 🟢       | ⚪️       | ⚪️        | 🟢         | 🟢       | 🟢       | ⚪️         | ⚪️         | 🔴         | 🟢       | 🔴       |
-| Wire slave                                  | 🟢       | ⚪️       | ⚪️        | 🟢         | 🔴       | 🟢       | ⚪️         | ⚪️         | 🔴         | 🔴       | 🔴       |
-| Neopixel library/libraries                  | 🟢       | 🟢       | ⚪️        | 🟢         | 🟢       | 🟢       | ⚪️         | ⚪️         | 🟢         | 🟢       | 🔴       |
-| Servo library/libraries                     | ⚪️       | ⚪️       | ⚪️        | 🟢         | 🟢       | 🟢       | ⚪️         | ⚪️         | 🟢         | 🔴       | 🔴       |
-| `tone()` (using timer1)                     | ⚪️       | ⚪️       | ⚪️        | ⚪️         | ⚪️       | ⚪️       | ⚪️         | ⚪️         | ⚪️         | ⚪️       | ⚫️       |
+| `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
+| `analogWrite()`on all supported pins        | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | ⚪️         | 🟢        | ⚪️        |
+| `Serial.print()` and `Serial.read()`        | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
+| `analogRead()`on all supported pins         | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | ⚫️          | 🟢          | 🟢         | 🟢        | 🟢        |
+| SPI master                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🔴        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
+| SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | 🟢         | ⚫️        | ⚫️        |
+| Wire master                                 | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🟢        | 🔴        |
+| Wire slave                                  | 🟢        | ⚪️        | ⚪️         | 🟢         | 🔴        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🔴        | 🔴        |
+| Neopixel library/libraries                  | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🔴        |
+| Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | ⚫️        | 🔴        |
+| `tone()` (using timer1)                     | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚫️        |
 
 🟢 = Works
 🔴 = Does not work
@@ -37,7 +37,7 @@ The tests in this folder each check one particular basic functionality. They are
 ATtiny26:
 
 - analogWrite: PWM does not work on either PWM pin (9 and 11)
-- Wire Master & Slave, SPI master, Neopixel: Not enough memory for test sketch
+- Wire Master & Slave, Neopixel: Not enough memory for test sketch
 - Servo: Compilation error
 
 ATtiny167:
@@ -46,13 +46,8 @@ ATtiny167:
 
 - SPI master: Stops in the middle of the test. (may be related to a bug previously fixed. Needs re-testing)
 
-ATtiny861:
-
-- SPI master: Message is not received by the slave 
-
 ATtiny43U:
 
-- Servo: Compiler message: Not supported
 - Wire slave: Does not start
 - SPI master: No transfer (in 1.5.2 core: compilation error)
 
