@@ -36,7 +36,7 @@ void receiveEvent(int howMany) {
 // this function is registered as an event, see setup()
 void requestEvent() {
   buf[4] = '\0';
-  Serial.print("Replying to master: '");
+  Serial.print(F("Replying to master: '"));
   Serial.print(buf);
   Serial.println("'");
   Wire.write(buf); // respond with message of 4 bytes

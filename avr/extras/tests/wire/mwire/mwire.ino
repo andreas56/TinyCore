@@ -56,7 +56,7 @@ void loop() {
     if (succ)
       Serial.println(F("Wire test successfull"));
     else
-      Serial.println("*** Wire test failed");
+      Serial.println(F("*** Wire test failed"));
     while(1);
   }
 }
