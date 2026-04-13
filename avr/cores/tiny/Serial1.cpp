@@ -8,13 +8,13 @@
     ISR(USART1_RX_vect)
     {
       unsigned char c = UDR1;
-      Serial._store_rx_char(c);
+      Serial1._store_rx_char(c);
     }
   #elif defined(USART1_RXC_vect)
     ISR(USART1_RXC_vect )
     {
       unsigned char c = UDR1;
-      Serial._store_rx_char(c);
+      Serial1._store_rx_char(c);
     }
   #else
     //no UART1
@@ -22,7 +22,7 @@
   #ifdef USART1_UDRE_vect
     ISR(USART1_UDRE_vect)
     {
-      Serial._tx_reg_empty_irq();
+      Serial1._tx_reg_empty_irq();
     }
   #endif
 #endif
