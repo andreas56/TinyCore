@@ -52,23 +52,29 @@
   }
   #else
   ) {
-    _rx_buffer = rx_buffer;
-    _tx_buffer = tx_buffer;
   }
   #endif
 
 // Interrupt handler helpers //////////////////////////////////////////////////////////////
 
-  void HardwareSerial::_tx_udr_empty_irq(void)
+  void HardwareSerial::_tx_reg_empty_irq(void)
   {
     if (_tx_buffer_head == _tx_buffer_tail) {
       // Buffer empty, so disable interrupts
-      *_ucsrb &= ~(1 << UDRIE);
+#ifdef LINENIR
+      LINENIR &= ~(1 << LENTXOK); //unset LENTXOK
+#else
+      *_ucsrb &= ~(1 << UDRIE); // disable data ready irq
+#endif
     } else {
       // There is more data in the output buffer. Send the next byte
       unsigned char c = _tx_buffer[_tx_buffer_tail];
       _tx_buffer_tail = (_tx_buffer_tail + 1) % SERIAL_BUFFER_SIZE;
+#ifdef LINDAT
+      LINDAT = c;
+#else
       *_udr = c;
+#endif
     }
   }
 
@@ -183,13 +189,22 @@
   }
 
   void HardwareSerial::flush() {
-    while (_tx_buffer_head != _tx_buffer_tail || (bit_is_set(*_ucsra, UDRIE))) {
+#ifdef LINENIR
+    while (_tx_buffer_head != _tx_buffer_tail || (bit_is_set(LINENIR, LENTXOK))) {
+      if (bit_is_clear(SREG, SREG_I) && bit_is_set(LINENIR, LENTXOK))
+        // Interrupts are globally disabled, but the DR empty
+        // interrupt should be enabled, so poll the DR empty flag to
+        // prevent deadlock
+        if (bit_is_set(LINSIR, LTXOK))
+#else
+    while (_tx_buffer_head != _tx_buffer_tail || (bit_is_set(*_ucsrb, UDRIE))) {
       if (bit_is_clear(SREG, SREG_I) && bit_is_set(*_ucsrb, UDRIE))
         // Interrupts are globally disabled, but the DR empty
         // interrupt should be enabled, so poll the DR empty flag to
         // prevent deadlock
         if (bit_is_set(*_ucsra, UDRE))
-            _tx_udr_empty_irq();
+#endif
+            _tx_reg_empty_irq();
       // If interrupts are enabled, the buffer will be emptied in an interrupt driven way
     }
     // buffer is empty now
@@ -206,8 +221,12 @@
         // register empty flag ourselves. If it is set, pretend an
         // interrupt has happened and call the handler to free up
         // space for us.
+#ifdef LINSIR
+        if (bit_is_set(LINSIR, LTXOK))
+#else
         if(bit_is_set(*_ucsra, UDRE))
-          _tx_udr_empty_irq();
+#endif
+          _tx_reg_empty_irq();
       }
     }
 

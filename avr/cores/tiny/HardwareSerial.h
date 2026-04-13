@@ -136,7 +136,7 @@
       operator bool();
 
       // called insíde interrupt handlers - not intended to be called externally
-      void _tx_udr_empty_irq(void);
+      void _tx_reg_empty_irq(void);
       void _store_rx_char(unsigned char c);
   };
 

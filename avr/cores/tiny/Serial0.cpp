@@ -8,7 +8,7 @@
     #endif
     #if defined(USART0_UDRE_vect)
       ISR(USART0_UDRE_vect) {
-         Serial._tx_udr_empty_irq();
+         Serial._tx_reg_empty_irq();
       }
     #endif
   #endif
@@ -26,15 +26,7 @@
       }
       if(LINSIR & _BV(LTXOK)) {
         //PINA |= _BV(PINA5); //debug
-        if (tx_buffer.head == tx_buffer.tail) {
-        // Buffer empty, so disable the Transmit Performed Interrupt
-          LINENIR &= ~(1 << LENTXOK); //unset LENTXOK
-        } else {
-          // There is more data in the output buffer. Send the next byte
-          unsigned char c = tx_buffer.buffer[tx_buffer.tail];
-          tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
-          LINDAT = c;
-        }
+        Serial._tx_reg_empty_irq();
       }
     }
   #endif

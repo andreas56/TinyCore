@@ -22,7 +22,7 @@
   #ifdef USART1_UDRE_vect
     ISR(USART1_UDRE_vect)
     {
-      Serial._tx_udr_empty_irq();
+      Serial._tx_reg_empty_irq();
     }
   #endif
 #endif
