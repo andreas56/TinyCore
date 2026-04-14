@@ -23,8 +23,8 @@ The tests in this folder each check one particular basic functionality. They are
 | SPI master                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
 | SPI slave                                   | ⚫️        | ⚫️        | 🟢         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | 🟢         | ⚫️        | ⚫️        |
 | Wire master                                 | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
-| Wire slave                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🔴        | 🟢        |
-| Neopixel library/libraries                  | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🔴        |
+| Wire slave                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
+| Neopixel library/libraries                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
 | Servo library/libraries                     | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | ⚫️        | ⚫️        |
 | `tone()` (using timer1)                     | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚫️        | ⚫️        |
 
