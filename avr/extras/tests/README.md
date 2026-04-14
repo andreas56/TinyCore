@@ -23,8 +23,8 @@ The tests in this folder each check one particular basic functionality. They are
 | SPI master                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
 | SPI slave                                   | ⚫️        | ⚫️        | 🟢         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | 🟢         | ⚫️        | ⚫️        |
 | Wire master                                 | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
-| Wire slave                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🔴        | 🟢        |
-| Neopixel library/libraries                  | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🔴        |
+| Wire slave                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
+| Neopixel library/libraries                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
 | Servo library/libraries                     | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | ⚫️        | ⚫️        |
 | `tone()` (using timer1)                     | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚫️        | ⚫️        |
 
@@ -33,12 +33,3 @@ The tests in this folder each check one particular basic functionality. They are
 🟡 = Partially works
 ⚫️ = Not present / Not implemented
 ⚪️ = Untested
-
-ATtiny26:
-
-- Neopixel: Not enough memory for test sketch (needs to be re-tested with a simpler test sketch)
-
-ATtiny43U:
-
-- Wire slave: Does not start
-- SPI master: No transfer (in 1.5.2 core: compilation error)
