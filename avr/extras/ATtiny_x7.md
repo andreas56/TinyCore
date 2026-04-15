@@ -113,7 +113,7 @@ Only the built-in Wire library is officially supported. Issues arising from the 
 The ATtiny87/167 features a full hardware SPI peripheral, supported by the standard SPI library. Third-party libraries targeting tinyAVR parts that rely on USI-based implementations such as USIWire should not be used, as the ATtiny87/167 is among the few tinyAVR devices with a dedicated SPI peripheral and does not use the USI for SPI communication.
 
 ### UART with LIN support
-The ATtiny87/167 features a full hardware UART with LIN (Local Interconnect Network) support, exposed as `Serial` and fully compatible with the standard Arduino Serial API. Unlike the software serial implementations required on most other ATtiny devices, this is a true hardware peripheral.
+The ATtiny87/167 features a hardware UART with LIN (Local Interconnect Network) support, named `Serial`. It behaves similarly to a standard full-duplex AVR serial interface, but with a one-character output buffer instead of a large one. A 16-byte output buffer can be enabled with `-DRXBUFFER` as a build flag in PlatformIO.
 
 LIN support is unique to the ATtiny87/167 among the classic ATtiny lineup, and is widely used in automotive and industrial applications. A notable benefit of the LIN-capable baud rate generator is its ability to match target baud rates more closely than a standard UART module.
 

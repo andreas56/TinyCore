@@ -100,13 +100,9 @@ Note that the USI uses DI (Data In) and DO (Data Out) rather than the convention
 Only the built-in SPI library is officially supported. If you encounter issues when using a third-party SPI library, please contact that library's author or maintainer, compatibility with USI-based hardware is their responsibility.
 
 ### UART (Serial) support
-There is one full hardware serial port, named `Serial`. It works the same as `Serial` on any normal Arduino - it is not a software implementation. Be aware that due to the limited memory on these chips the buffers are quite small.
+There is one hardware serial port, named `Serial`. It behaves similarly to a standard full-duplex AVR serial interface, but with a one-character output buffer instead of a large one. A 16-byte output buffer can be enabled with `-DRXBUFFER` as a build flag in PlatformIO.
 
-To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels
-```c
-UCSRB &= ~(1 << TXEN); // disable TX
-UCSRB &= ~(1 << RXEN); // disable RX
-```
+To use only TX, freeing the RX pin and reducing flash usage, select "Serial: TX only" in the Tools menu, or use `-DTX_ONLY` as a build flag in PlatformIO.
 
 ### Tone support
 `tone()` uses Timer1. For best results, use pin PB3 (12) or PB4 (13), as this will use the hardware output compare to generate the square wave instead of using interrupts. `tone()` will disable PWM on PB3 and PB4.

@@ -250,9 +250,11 @@ See the serial section below for additional details.
 
 
 ### Serial/UART
-All devices provide a `Serial` object. On parts with hardware UART, `Serial` behaves as a standard full-duplex AVR serial interface. Devices with two UARTs also provide `Serial1`. Most supported devices do not include hardware UART and instead use software serial.
+All devices provide a `Serial` object. On parts with hardware UART, `Serial` behaves similarly to a standard full-duplex AVR serial interface. However, instead of a large output buffer, they have only a one-character output buffer. In PlatformIO, you can require to have a 16-byte output buffer using `-DRXBUFFER`, if needed.
 
-The built-in serial implementation makes it possible to only enable transmission only. This can be done in the Tools menu, or adding `-DTX_ONLY` as a build flag in PlatformIO. TX only will exclude everything except the transmit functionality.
+Devices with two UARTs also provide `Serial1`. Most supported devices do not include hardware UART and instead use software serial with blocking output.
+
+If you only need an output stream, you can choose TX-only in the `Tools` menu order to free the RX pin and save some flash.
 
 <details>
 <summary><b>Hardware and software serial</b></summary>

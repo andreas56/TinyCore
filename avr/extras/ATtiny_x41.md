@@ -114,14 +114,9 @@ Simply call `REMAP |= _BV(SPIMAP);` *before* `SPI.begin();`to set the alternativ
 | Remapped    | PA3 | PA0  | PA1  | PA2 |
 
 ### UART (Serial) support
-The ATtiny441/841 features two full hardware serial ports, exposed as `Serial` and `Serial1`, both fully compatible with the standard Arduino Serial API.
+The ATtiny441/841 features two hardware serial ports, `Serial` and `Serial1`. They behave similarly to a standard full-duplex AVR serial interface, but with a one-character output buffer instead of a large one. A 16-byte output buffer can be enabled with `-DRXBUFFER` as a build flag in PlatformIO.
 
-To use only the TX or RX channel, call `Serial.begin()` first, then disable the unwanted channel using the appropriate control register bit:
-```c
-UCSR0B &= ~(1 << TXEN0); // Disable TX on Serial
-UCSR0B &= ~(1 << RXEN0); // Disable RX on Serial
-```
-For `Serial1`, substitute `UCSR1B` for `UCSR0B`.
+To use only TX, freeing the RX pin and reducing flash usage, select "Serial: TX only" in the Tools menu, or use `-DTX_ONLY` as a build flag in PlatformIO.
 
 ### Tone support
 The standard `tone()` function is supported on these parts. For best results, use PA5 or PA6, as this will use hardware output compare to generate the square wave, instead of interrupts.

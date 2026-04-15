@@ -122,14 +122,9 @@ Slave I2C functionality is provided in hardware, but a software implementation m
 There is full Hardware SPI support. However, PD3 is one of the pins used by the hardware SPI; you must use the WDT workaround for the PD3 silicon bug if using SPI. Third party SPI libraries designed for tinyAVRs are not supported by the hardware and will not work.
 
 ### UART (Serial) support
-There is one full hardware serial port, `Serial`. It works the same as `Serial` on any normal Arduino - it is not a software implementation. Be aware that due to the limited memory on these chips the buffers are quite small.
+There is one hardware serial port, named `Serial`. It behaves similarly to a standard full-duplex AVR serial interface, but with a one-character output buffer instead of a large one. A 16-byte output buffer can be enabled with `-DRXBUFFER` as a build flag in PlatformIO.
 
-To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels
-```c
-UCSRB &= ~(1 << TXEN); // disable TX
-UCSRB &= ~(1 << RXEN); // disable RX
-```
-
+To use only TX, freeing the RX pin and reducing flash usage, select "Serial: TX only" in the Tools menu, or use `-DTX_ONLY` as a build flag in PlatformIO.
 
 ### ADC support
 There is abundant evidence that this device was intended to have a differential ADC; the register layout matches that of the ATtiny841 which has a vere nice differential ADC, except that all the register bits that would be involved in that are marked reserved. If that wasn't enough to convince you, reading that chapter of the datasheet, it is clear that references to a differential ADC were scrubbed in a hurry at the last minute. I suspect it was found to be afflicted by a fatal flaw, whose workaround if any was to onerouos or the nature of the mistake too humiliating to present to customers, managemnt denied the request for a respin to fix it, and they responded by removing it on paper only - and is still actually in the silicon (if they had time to respin, they'd have fixed it, I suspect).  See the link at the top of this page - if you like poking at "reserved" registers and trying to find secret features, and have time on your hands, it could be a lot of fun, and if you solve the mystery, I'll mail you some free boards of your choice from my store.

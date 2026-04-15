@@ -99,13 +99,9 @@ Note that the USI uses DI (Data In) and DO (Data Out) rather than the convention
 Only the built-in SPI library is officially supported. If you encounter issues when using a third-party SPI library, please contact that library's author or maintainer, compatibility with USI-based hardware is their responsibility.
 
 ### UART (Serial) Support
-There are two hardware serial ports, `Serial` and `Serial1`. It works the same as Serial on any normal Arduino - it is not a software implementation.
+The ATtiny1634 features two hardware serial ports, `Serial` and `Serial1`. They behave similarly to a standard full-duplex AVR serial interface, but with a one-character output buffer instead of a large one. A 16-byte output buffer can be enabled with `-DRXBUFFER` as a build flag in PlatformIO.
 
-To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSR1B instead)
-```c
-UCSR0B &= ~(1<<TXEN0); // disable TX
-UCSR0B &= ~(1<<RXEN0); // disable RX
-```
+To use only TX, freeing the RX pin and reducing flash usage, select "Serial: TX only" in the Tools menu, or use `-DTX_ONLY` as a build flag in PlatformIO.
 
 ### Tone Support
 Tone() uses Timer1. For best results, use pin 2 or 14 (PA6, PB3), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins PA6 and PB3.
