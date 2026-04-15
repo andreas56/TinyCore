@@ -80,6 +80,7 @@
   }
 #endif
 
+#ifndef TX_ONLY
   void HardwareSerial::_store_rx_char(unsigned char c) {
     byte i = (_rx_buffer_head + 1) % SERIAL_BUFFER_SIZE;
 
@@ -92,6 +93,7 @@
       _rx_buffer_head = i;
     }
   }
+#endif
 
 // Public Methods //////////////////////////////////////////////////////////////
 
@@ -133,7 +135,9 @@
     LINBRR = (((F_CPU * 10L / 16L / baud) + 5L) / 10L) - 1;
     LINBTR = (1 << LDISR) | (16 << LBT0);
     LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0);
+    #ifndef TX_ONLY
     LINENIR =_BV(LENRXOK);
+    #endif
   #endif
     // LINENIR only ever set to 0, 1, 2, or 3. Can we use our knowledge of the state if should be in to out advantage?
 
@@ -168,18 +172,27 @@
   }
 
   int HardwareSerial::available(void) {
+    #ifndef TX_ONLY
     return (unsigned int)(SERIAL_BUFFER_SIZE + _rx_buffer_head - _rx_buffer_tail) & (SERIAL_BUFFER_SIZE - 1);
+    #else
+    return 0;
+    #endif
   }
 
   int HardwareSerial::peek(void) {
+    #ifndef TX_ONLY
     if (_rx_buffer_head == _rx_buffer_tail) {
       return -1;
     } else {
       return _rx_buffer[_rx_buffer_tail];
     }
+    #else
+    return -1;
+    #endif
   }
 
   int HardwareSerial::read(void) {
+    #ifndef TX_ONLY
     // if the head isn't ahead of the tail, we don't have any characters
     if (_rx_buffer_head == _rx_buffer_tail) {
       return -1;
@@ -188,6 +201,9 @@
       _rx_buffer_tail = (_rx_buffer_tail + 1)  & (SERIAL_BUFFER_SIZE - 1);
       return c;
     }
+    #else
+    return -1;
+    #endif
   }
 
   void HardwareSerial::flush() {
@@ -212,7 +228,8 @@
     }
   #else // without ring buffer
     #ifdef LINSIR
-    while (bit_is_set(LINSIR, LTXOK));
+    if (bit_is_set(LINENIR, LENTXOK))
+      while (bit_is_set(LINSIR, LTXOK));
     #else
     while (bit_is_set(*_ucsra, UDRE));
     #endif
@@ -259,7 +276,11 @@
   #else // without ring buffer
    #ifdef LINSIR
     if (bit_is_clear(LINENIR, LENTXOK)) // nothing written yet
+      #ifndef TX_ONLY
       LINENIR = _BV(LENTXOK) | _BV(LENRXOK);
+      #else
+      LINENIR = _BV(LENTXOK);
+      #endif
     else
       while (bit_is_clear(LINSIR, LTXOK)); // wait for output register to empty
     LINDAT = c;

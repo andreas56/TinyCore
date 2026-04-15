@@ -88,8 +88,10 @@
       volatile uint8_t *_ucsrb;
       volatile uint8_t *_udr;
 
+#ifndef TX_ONLY
       volatile byte _rx_buffer_head;
       volatile byte _rx_buffer_tail;
+#endif
 #ifdef TXBUFFER
       volatile byte _tx_buffer_head;
       volatile byte _tx_buffer_tail;
@@ -98,7 +100,9 @@
       // Don't put any members after these buffers, since only the first
       // 32 bytes of this struct can be accessed quickly using the ldd
       // instruction.
+#ifndef TX_ONLY
       unsigned char _rx_buffer[SERIAL_BUFFER_SIZE];
+#endif
 #ifdef TXBUFFER
       unsigned char _tx_buffer[SERIAL_BUFFER_SIZE];
 #endif
@@ -143,7 +147,9 @@
 #ifdef TXBUFFER
       void _tx_reg_empty_irq(void);
 #endif
+#ifndef TX_ONLY
       void _store_rx_char(unsigned char c);
+#endif
   };
 
   #endif
