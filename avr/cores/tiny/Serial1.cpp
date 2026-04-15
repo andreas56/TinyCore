@@ -10,7 +10,7 @@
       unsigned char c = UDR1;
       Serial1._store_rx_char(c);
     }
-  #elif defined(USART1_RXC_vect) && defined(TX_ONLY)
+  #elif defined(USART1_RXC_vect) && !defined(TX_ONLY)
     ISR(USART1_RXC_vect )
     {
       unsigned char c = UDR1;

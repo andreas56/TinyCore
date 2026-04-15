@@ -128,15 +128,20 @@
     // assign the baud_setting, a.k.a. ubbr (USART Baud Rate Register)
     *_ubrrh = baud_setting >> 8;
     *_ubrrl = baud_setting;
+   #ifndef TX_ONLY
     *_ucsrb = (_rxen | _txen | _rxcie);
-
+   #else
+    *_ucsrb = (_txen); // do not enable RX pin and interrupt of TX only
+   #endif
   #else
     LINCR = (1 << LSWRES);
     LINBRR = (((F_CPU * 10L / 16L / baud) + 5L) / 10L) - 1;
     LINBTR = (1 << LDISR) | (16 << LBT0);
-    LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0);
     #ifndef TX_ONLY
+    LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0);
     LINENIR =_BV(LENRXOK);
+    #else
+    LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD0); // Do not enable receive byte in TX-only mode
     #endif
   #endif
     // LINENIR only ever set to 0, 1, 2, or 3. Can we use our knowledge of the state if should be in to out advantage?
